@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext): void {
       }
 
       if (!(await resourceExists(node.resourceUri))) {
-        void vscode.window.showWarningMessage(`Source path does not exist: ${node.resourceUri.fsPath}`);
+        showMissingSourcePath(node.resourceUri);
         return;
       }
 
@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext): void {
       }
 
       if (!(await resourceExists(node.resourceUri))) {
-        void vscode.window.showWarningMessage(`Source path does not exist: ${node.resourceUri.fsPath}`);
+        showMissingSourcePath(node.resourceUri);
         return;
       }
 
@@ -55,7 +55,7 @@ export function activate(context: vscode.ExtensionContext): void {
       }
 
       await vscode.env.clipboard.writeText(node.studioPath);
-      void vscode.window.showInformationMessage(`Copied Studio path: ${node.studioPath}`);
+      void vscode.window.showInformationMessage(vscode.l10n.t("Copied Studio path: {0}", node.studioPath));
     }),
     vscode.commands.registerCommand("rojoExplorer.copySourcePath", async (node?: ExplorerNode) => {
       if (!node?.resourceUri) {
@@ -63,7 +63,7 @@ export function activate(context: vscode.ExtensionContext): void {
       }
 
       await vscode.env.clipboard.writeText(node.resourceUri.fsPath);
-      void vscode.window.showInformationMessage(`Copied source path: ${node.resourceUri.fsPath}`);
+      void vscode.window.showInformationMessage(vscode.l10n.t("Copied source path: {0}", node.resourceUri.fsPath));
     }),
   );
 }
@@ -75,7 +75,7 @@ export function deactivate(): void {
 async function openTextDocument(uri: vscode.Uri): Promise<void> {
   const stat = await statResource(uri);
   if (!stat) {
-    void vscode.window.showWarningMessage(`Source path does not exist: ${uri.fsPath}`);
+    showMissingSourcePath(uri);
     return;
   }
 
@@ -86,6 +86,10 @@ async function openTextDocument(uri: vscode.Uri): Promise<void> {
 
   const document = await vscode.workspace.openTextDocument(uri);
   await vscode.window.showTextDocument(document, { preview: false });
+}
+
+function showMissingSourcePath(uri: vscode.Uri): void {
+  void vscode.window.showWarningMessage(vscode.l10n.t("Source path does not exist: {0}", uri.fsPath));
 }
 
 async function resourceExists(uri: vscode.Uri): Promise<boolean> {

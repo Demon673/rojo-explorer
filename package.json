@@ -1,7 +1,7 @@
 {
   "name": "rojo-explorer",
-  "displayName": "Rojo Explorer",
-  "description": "A VS Code extension that presents a Roblox Studio-like explorer for Rojo workspaces.",
+  "displayName": "%rojoExplorer.displayName%",
+  "description": "%rojoExplorer.description%",
   "version": "0.0.1",
   "publisher": "local-dev",
   "private": true,
@@ -29,6 +29,7 @@
   "extensionKind": [
     "workspace"
   ],
+  "l10n": "./l10n",
   "activationEvents": [
     "onView:rojoExplorer.views.explorer",
     "onCommand:rojoExplorer.refresh",
@@ -43,37 +44,37 @@
     "commands": [
       {
         "command": "rojoExplorer.refresh",
-        "title": "Refresh Rojo Explorer",
+        "title": "%rojoExplorer.commands.refresh.title%",
         "icon": "$(refresh)"
       },
       {
         "command": "rojoExplorer.openRojoProject",
-        "title": "Open Rojo Project",
+        "title": "%rojoExplorer.commands.openRojoProject.title%",
         "icon": "$(json)"
       },
       {
         "command": "rojoExplorer.openResource",
-        "title": "Open Resource",
+        "title": "%rojoExplorer.commands.openResource.title%",
         "icon": "$(go-to-file)"
       },
       {
         "command": "rojoExplorer.revealInFileExplorer",
-        "title": "Reveal in File Explorer",
+        "title": "%rojoExplorer.commands.revealInFileExplorer.title%",
         "icon": "$(folder-opened)"
       },
       {
         "command": "rojoExplorer.revealInVsCodeExplorer",
-        "title": "Reveal in VS Code Explorer",
+        "title": "%rojoExplorer.commands.revealInVsCodeExplorer.title%",
         "icon": "$(list-tree)"
       },
       {
         "command": "rojoExplorer.copyStudioPath",
-        "title": "Copy Studio Path",
+        "title": "%rojoExplorer.commands.copyStudioPath.title%",
         "icon": "$(copy)"
       },
       {
         "command": "rojoExplorer.copySourcePath",
-        "title": "Copy Source Path",
+        "title": "%rojoExplorer.commands.copySourcePath.title%",
         "icon": "$(clippy)"
       }
     ],
@@ -122,14 +123,15 @@
       "explorer": [
         {
           "id": "rojoExplorer.views.explorer",
-          "name": "Rojo Explorer",
+          "name": "%rojoExplorer.views.explorer.name%",
           "when": "workspaceFolderCount != 0"
         }
       ]
     }
   },
   "scripts": {
-    "compile": "tsc -p ./",
+    "clean": "node -e \"require('node:fs').rmSync('out', { recursive: true, force: true })\"",
+    "compile": "npm run clean && tsc -p ./",
     "test": "vitest run",
     "test:watch": "vitest",
     "watch": "tsc -watch -p ./",

@@ -92,7 +92,7 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     if (node.resourceUri && node.kind === "instance") {
       item.command = {
         command: "rojoExplorer.openResource",
-        title: "Open Resource",
+        title: vscode.l10n.t("Open Resource"),
         arguments: [node],
       };
     }
@@ -101,7 +101,7 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
       item.command = node.diagnostic?.fsPath
         ? {
             command: "rojoExplorer.openResource",
-            title: "Open Diagnostic Source",
+            title: vscode.l10n.t("Open Diagnostic Source"),
             arguments: [{ ...node, resourceUri: vscode.Uri.file(node.diagnostic.fsPath) }],
           }
         : undefined;
@@ -126,7 +126,7 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
   async pickRojoProject(): Promise<vscode.Uri | undefined> {
     const projectUris = await findRojoProjectFiles();
     if (projectUris.length === 0) {
-      void vscode.window.showInformationMessage("No Rojo project file was found in this workspace.");
+      void vscode.window.showInformationMessage(vscode.l10n.t("No Rojo project file was found in this workspace."));
       return undefined;
     }
 
@@ -140,7 +140,7 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
       uri,
     }));
     const selected = await vscode.window.showQuickPick(picks, {
-      placeHolder: "Select a Rojo project file",
+      placeHolder: vscode.l10n.t("Select a Rojo project file"),
     });
 
     return selected?.uri;
@@ -149,7 +149,7 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
   private async createRootNodes(): Promise<ExplorerNode[]> {
     const workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders || workspaceFolders.length === 0) {
-      return [this.createMessageNode("Open a Rojo workspace or folder to inspect resources.")];
+      return [this.createMessageNode(vscode.l10n.t("Open a Rojo workspace or folder to inspect resources."))];
     }
 
     const projectUris = await findRojoProjectFiles();
@@ -161,10 +161,10 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     return workspaceFolders.map((folder) => ({
       kind: "workspaceFolder",
       label: folder.name,
-      description: "No Rojo project file",
+      description: vscode.l10n.t("No Rojo project file"),
       tooltip: folder.uri.fsPath,
       resourceUri: folder.uri,
-      children: [this.createMessageNode("No Rojo project file was found in this workspace folder.")],
+      children: [this.createMessageNode(vscode.l10n.t("No Rojo project file was found in this workspace folder."))],
     }));
   }
 
@@ -256,30 +256,30 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
   }
 
   private createTooltip(node: ExplorerNode): string {
-    const diagnostics = node.diagnostics?.map((diagnostic) => `${diagnostic.severity}: ${diagnostic.message}`) ?? [];
+    const diagnostics = node.diagnostics?.map((diagnostic) => this.formatDiagnosticLine(diagnostic)) ?? [];
     const details = [node.className, node.studioPath, node.resourceUri?.fsPath, ...diagnostics].filter(Boolean);
     return details.length > 0 ? details.join("\n") : node.label;
   }
 
   private createProjectTooltip(model: RojoProjectModel): string {
-    const diagnostics = model.diagnostics.map((diagnostic) => `${diagnostic.severity}: ${diagnostic.message}`);
+    const diagnostics = model.diagnostics.map((diagnostic) => this.formatDiagnosticLine(diagnostic));
     return [model.config.projectFilePath, ...diagnostics].join("\n");
   }
 
   private createInstanceDescription(instance: RojoInstanceNode): string {
     if (instance.diagnostics.some((diagnostic) => diagnostic.severity === "error")) {
-      return `${instance.className} - error`;
+      return vscode.l10n.t("{0} - error", instance.className);
     }
 
     if (instance.diagnostics.some((diagnostic) => diagnostic.severity === "warning")) {
-      return `${instance.className} - warning`;
+      return vscode.l10n.t("{0} - warning", instance.className);
     }
 
     return instance.className;
   }
 
   private createInstanceTooltip(instance: RojoInstanceNode): string {
-    const diagnostics = instance.diagnostics.map((diagnostic) => `${diagnostic.severity}: ${diagnostic.message}`);
+    const diagnostics = instance.diagnostics.map((diagnostic) => this.formatDiagnosticLine(diagnostic));
     return [
       instance.className,
       formatNodeStudioPath(instance),
@@ -291,7 +291,7 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
   private createDiagnosticNodes(diagnostics: RojoDiagnostic[], projectUri: vscode.Uri): ExplorerNode[] {
     return diagnostics.map((diagnostic) => ({
       kind: "diagnostic",
-      label: diagnostic.message,
+      label: this.localizeDiagnosticMessage(diagnostic),
       description: diagnostic.code,
       tooltip: this.createDiagnosticTooltip(diagnostic),
       resourceUri: diagnostic.fsPath ? vscode.Uri.file(diagnostic.fsPath) : undefined,
@@ -303,11 +303,40 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
 
   private createDiagnosticTooltip(diagnostic: RojoDiagnostic): string {
     return [
-      `${diagnostic.severity}: ${diagnostic.message}`,
+      this.formatDiagnosticLine(diagnostic),
       diagnostic.code,
       diagnostic.studioPath,
       diagnostic.fsPath,
     ].filter(Boolean).join("\n");
+  }
+
+  private formatDiagnosticLine(diagnostic: RojoDiagnostic): string {
+    return `${localizeSeverity(diagnostic.severity)}: ${this.localizeDiagnosticMessage(diagnostic)}`;
+  }
+
+  private localizeDiagnosticMessage(diagnostic: RojoDiagnostic): string {
+    const location = diagnostic.fsPath ?? diagnostic.studioPath ?? "";
+
+    switch (diagnostic.code) {
+      case "invalidJson":
+        return vscode.l10n.t("Invalid JSON: {0}", location);
+      case "missingTree":
+        return vscode.l10n.t("Rojo project file is missing a valid tree object.");
+      case "pathNotFound":
+        return vscode.l10n.t("Mapped path does not exist: {0}", location);
+      case "unsupportedPathType":
+        return vscode.l10n.t("Mapped file is not a supported Rojo resource: {0}", location);
+      case "duplicateInitScript":
+        return vscode.l10n.t("Only one init script can be present in this directory: {0}", location);
+      case "invalidMetaJson":
+        return vscode.l10n.t("Invalid meta JSON: {0}", location);
+      case "unsupportedMetaClassName":
+        return vscode.l10n.t("Only init.meta.json can change className.");
+      case "unsupportedMetaProperties":
+        return vscode.l10n.t("Meta properties are not applied to model resources.");
+      case "orphanMetaFile":
+        return vscode.l10n.t("Meta file has no matching Rojo resource: {0}", location);
+    }
   }
 
   private createMessageNode(label: string): ExplorerNode {
@@ -326,6 +355,17 @@ function diagnosticIcon(severity: RojoDiagnostic["severity"]): vscode.ThemeIcon 
       return new vscode.ThemeIcon("warning");
     case "info":
       return new vscode.ThemeIcon("info");
+  }
+}
+
+function localizeSeverity(severity: RojoDiagnostic["severity"]): string {
+  switch (severity) {
+    case "error":
+      return vscode.l10n.t("error");
+    case "warning":
+      return vscode.l10n.t("warning");
+    case "info":
+      return vscode.l10n.t("info");
   }
 }
 

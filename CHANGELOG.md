@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.1.3 - Unreleased
+
+- Add Simplified Chinese localization for extension manifest text and runtime messages.
+- Add localization key coverage tests for manifest and runtime bundles.
+
 ## 0.1.2 - Unreleased
 
 - Show Rojo diagnostics as expandable Explorer nodes.

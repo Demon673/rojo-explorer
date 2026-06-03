@@ -1,3 +1,4 @@
+.github/**
 .vscode/**
 .vscode-test/**
 src/**
@@ -5,7 +6,8 @@ node_modules/**
 test/**
 fixtures/**
 docs/**
-*.map
+**/*.map
 tsconfig.json
+vitest.config.ts
 .gitignore
 AGENTS.md

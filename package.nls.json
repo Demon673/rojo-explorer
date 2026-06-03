@@ -1,0 +1,12 @@
+{
+  "rojoExplorer.displayName": "Rojo Explorer",
+  "rojoExplorer.description": "A VS Code extension that presents a Roblox Studio-like explorer for Rojo workspaces.",
+  "rojoExplorer.commands.refresh.title": "Refresh Rojo Explorer",
+  "rojoExplorer.commands.openRojoProject.title": "Open Rojo Project",
+  "rojoExplorer.commands.openResource.title": "Open Resource",
+  "rojoExplorer.commands.revealInFileExplorer.title": "Reveal in File Explorer",
+  "rojoExplorer.commands.revealInVsCodeExplorer.title": "Reveal in VS Code Explorer",
+  "rojoExplorer.commands.copyStudioPath.title": "Copy Studio Path",
+  "rojoExplorer.commands.copySourcePath.title": "Copy Source Path",
+  "rojoExplorer.views.explorer.name": "Rojo Explorer"
+}
