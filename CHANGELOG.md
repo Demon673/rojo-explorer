@@ -2,6 +2,12 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.1.2 - Unreleased
+
+- Show Rojo diagnostics as expandable Explorer nodes.
+- Add commands to copy source paths and reveal resources in the VS Code Explorer.
+- Handle missing source paths without throwing command errors.
+
 ## 0.1.1 - Unreleased
 
 - Add GitHub Actions CI for tests, type checking, compilation, and dependency audit.

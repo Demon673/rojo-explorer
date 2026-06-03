@@ -33,7 +33,9 @@
     "onView:rojoExplorer.views.explorer",
     "onCommand:rojoExplorer.refresh",
     "onCommand:rojoExplorer.openRojoProject",
+    "onCommand:rojoExplorer.revealInVsCodeExplorer",
     "onCommand:rojoExplorer.copyStudioPath",
+    "onCommand:rojoExplorer.copySourcePath",
     "workspaceContains:**/*.project.json"
   ],
   "main": "./out/extension.js",
@@ -60,9 +62,19 @@
         "icon": "$(folder-opened)"
       },
       {
+        "command": "rojoExplorer.revealInVsCodeExplorer",
+        "title": "Reveal in VS Code Explorer",
+        "icon": "$(list-tree)"
+      },
+      {
         "command": "rojoExplorer.copyStudioPath",
         "title": "Copy Studio Path",
         "icon": "$(copy)"
+      },
+      {
+        "command": "rojoExplorer.copySourcePath",
+        "title": "Copy Source Path",
+        "icon": "$(clippy)"
       }
     ],
     "menus": {
@@ -90,8 +102,18 @@
           "group": "navigation"
         },
         {
+          "command": "rojoExplorer.revealInVsCodeExplorer",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /resource/",
+          "group": "navigation"
+        },
+        {
           "command": "rojoExplorer.copyStudioPath",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /studioPath/",
+          "group": "navigation"
+        },
+        {
+          "command": "rojoExplorer.copySourcePath",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /resource/",
           "group": "navigation"
         }
       ]

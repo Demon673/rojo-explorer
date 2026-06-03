@@ -12,7 +12,7 @@ import {
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 import { findRojoProjectFiles } from "./vscodeRojoProjects";
 
-export type ExplorerNodeKind = "project" | "workspaceFolder" | "instance" | "message";
+export type ExplorerNodeKind = "project" | "workspaceFolder" | "instance" | "diagnostic" | "message";
 
 export interface ExplorerNode {
   kind: ExplorerNodeKind;
@@ -24,6 +24,7 @@ export interface ExplorerNode {
   projectUri?: vscode.Uri;
   studioPath?: string;
   instance?: RojoInstanceNode;
+  diagnostic?: RojoDiagnostic;
   diagnostics?: RojoDiagnostic[];
   children?: ExplorerNode[];
   loadChildren?: () => Promise<ExplorerNode[]>;
@@ -94,6 +95,16 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
         title: "Open Resource",
         arguments: [node],
       };
+    }
+
+    if (node.kind === "diagnostic") {
+      item.command = node.diagnostic?.fsPath
+        ? {
+            command: "rojoExplorer.openResource",
+            title: "Open Diagnostic Source",
+            arguments: [{ ...node, resourceUri: vscode.Uri.file(node.diagnostic.fsPath) }],
+          }
+        : undefined;
     }
 
     return item;
@@ -167,7 +178,10 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
       resourceUri: projectUri,
       projectUri,
       diagnostics: model.diagnostics,
-      children: [this.createInstanceNode(model.root, projectUri)],
+      children: [
+        ...this.createDiagnosticNodes(model.diagnostics, projectUri),
+        this.createInstanceNode(model.root, projectUri),
+      ],
     };
   }
 
@@ -183,7 +197,10 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
       studioPath: formatNodeStudioPath(instance),
       instance,
       diagnostics: instance.diagnostics,
-      children: instance.children.map((child) => this.createInstanceNode(child, projectUri)),
+      children: [
+        ...this.createDiagnosticNodes(instance.diagnostics, projectUri),
+        ...instance.children.map((child) => this.createInstanceNode(child, projectUri)),
+      ],
     };
   }
 
@@ -217,6 +234,10 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
 
     if (node.kind === "message") {
       return new vscode.ThemeIcon("info");
+    }
+
+    if (node.kind === "diagnostic") {
+      return diagnosticIcon(node.diagnostic?.severity ?? "info");
     }
 
     if (node.diagnostics?.some((diagnostic) => diagnostic.severity === "error")) {
@@ -267,11 +288,44 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     ].filter(Boolean).join("\n");
   }
 
+  private createDiagnosticNodes(diagnostics: RojoDiagnostic[], projectUri: vscode.Uri): ExplorerNode[] {
+    return diagnostics.map((diagnostic) => ({
+      kind: "diagnostic",
+      label: diagnostic.message,
+      description: diagnostic.code,
+      tooltip: this.createDiagnosticTooltip(diagnostic),
+      resourceUri: diagnostic.fsPath ? vscode.Uri.file(diagnostic.fsPath) : undefined,
+      projectUri,
+      studioPath: diagnostic.studioPath,
+      diagnostic,
+    }));
+  }
+
+  private createDiagnosticTooltip(diagnostic: RojoDiagnostic): string {
+    return [
+      `${diagnostic.severity}: ${diagnostic.message}`,
+      diagnostic.code,
+      diagnostic.studioPath,
+      diagnostic.fsPath,
+    ].filter(Boolean).join("\n");
+  }
+
   private createMessageNode(label: string): ExplorerNode {
     return {
       kind: "message",
       label,
     };
+  }
+}
+
+function diagnosticIcon(severity: RojoDiagnostic["severity"]): vscode.ThemeIcon {
+  switch (severity) {
+    case "error":
+      return new vscode.ThemeIcon("error");
+    case "warning":
+      return new vscode.ThemeIcon("warning");
+    case "info":
+      return new vscode.ThemeIcon("info");
   }
 }
 
