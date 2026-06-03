@@ -2,6 +2,10 @@
 
 Rojo Explorer is a VS Code extension for Roblox Rojo workflows. It adds a Studio-like resource explorer inside VS Code so a workspace or folder can be browsed through the same mental model used in Roblox Studio.
 
+## Project Safety
+
+This repository uses Git as the rollback boundary for project work. Changes should happen on feature branches, with a commit after each validated milestone. See [docs/git-safety.md](docs/git-safety.md).
+
 ## Current Scope
 
 - Adds a `Rojo Explorer` tree view in the VS Code Explorer sidebar.
@@ -39,6 +43,15 @@ Run TypeScript without writing build output:
 
 ```bash
 npm run typecheck
+```
+
+Run the same core checks used by CI:
+
+```bash
+npm run test
+npm run typecheck
+npm run compile
+npm audit
 ```
 
 Run the extension:

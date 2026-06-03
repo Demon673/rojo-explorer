@@ -5,6 +5,13 @@
   "version": "0.0.1",
   "publisher": "local-dev",
   "private": true,
+  "license": "MIT",
+  "keywords": [
+    "roblox",
+    "rojo",
+    "vscode-extension",
+    "explorer"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Demon673/rojo-explorer.git"
@@ -18,6 +25,9 @@
   },
   "categories": [
     "Other"
+  ],
+  "extensionKind": [
+    "workspace"
   ],
   "activationEvents": [
     "onView:rojoExplorer.views.explorer",

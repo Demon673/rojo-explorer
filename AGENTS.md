@@ -15,6 +15,7 @@ This repository is a VS Code extension for Roblox Rojo workflows.
 
 - Keep the extension implementation in TypeScript under `src/`.
 - Build output goes to `out/` and should not be edited by hand.
+- Use Git as the rollback boundary. Start risky work from a feature branch, commit validated milestones, and prefer `git revert` for pushed history.
 - Prefer VS Code APIs for workspace file reads, file watching, commands, and tree views.
 - Keep Rojo parsing in the domain layer under `src/domain/`. The VS Code TreeView should consume `RojoProjectModel` instead of inferring Rojo behavior directly.
 - Do not hard-code one Roblox project layout. Multiple workspace folders and multiple `*.project.json` files should remain valid.
