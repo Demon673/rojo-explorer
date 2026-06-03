@@ -1,0 +1,9 @@
+{
+  "name": "IncludedModel",
+  "tree": {
+    "$className": "Folder",
+    "Child": {
+      "$className": "Folder"
+    }
+  }
+}

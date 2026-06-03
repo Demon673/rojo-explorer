@@ -1,0 +1,118 @@
+{
+  "name": "rojo-explorer",
+  "displayName": "Rojo Explorer",
+  "description": "A VS Code extension that presents a Roblox Studio-like explorer for Rojo workspaces.",
+  "version": "0.0.1",
+  "publisher": "local-dev",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Demon673/rojo-explorer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Demon673/rojo-explorer/issues"
+  },
+  "homepage": "https://github.com/Demon673/rojo-explorer#readme",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:rojoExplorer.views.explorer",
+    "onCommand:rojoExplorer.refresh",
+    "onCommand:rojoExplorer.openRojoProject",
+    "onCommand:rojoExplorer.copyStudioPath",
+    "workspaceContains:**/*.project.json"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "rojoExplorer.refresh",
+        "title": "Refresh Rojo Explorer",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "rojoExplorer.openRojoProject",
+        "title": "Open Rojo Project",
+        "icon": "$(json)"
+      },
+      {
+        "command": "rojoExplorer.openResource",
+        "title": "Open Resource",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "rojoExplorer.revealInFileExplorer",
+        "title": "Reveal in File Explorer",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "rojoExplorer.copyStudioPath",
+        "title": "Copy Studio Path",
+        "icon": "$(copy)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "rojoExplorer.refresh",
+          "when": "view == rojoExplorer.views.explorer",
+          "group": "navigation"
+        },
+        {
+          "command": "rojoExplorer.openRojoProject",
+          "when": "view == rojoExplorer.views.explorer",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "rojoExplorer.openResource",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /resource/",
+          "group": "inline"
+        },
+        {
+          "command": "rojoExplorer.revealInFileExplorer",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /resource/",
+          "group": "navigation"
+        },
+        {
+          "command": "rojoExplorer.copyStudioPath",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /studioPath/",
+          "group": "navigation"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "rojoExplorer.views.explorer",
+          "name": "Rojo Explorer",
+          "when": "workspaceFolderCount != 0"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "watch": "tsc -watch -p ./",
+    "typecheck": "tsc --noEmit -p ./",
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "minimatch": "^10.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.0.0",
+    "vitest": "^4.1.8",
+    "typescript": "^5.5.4"
+  }
+}

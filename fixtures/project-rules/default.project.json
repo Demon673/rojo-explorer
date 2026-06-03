@@ -1,0 +1,28 @@
+{
+  "name": "ProjectRules",
+  "globIgnorePaths": [
+    "src/ReplicatedStorage/Ignored.lua",
+    "**/*.spec.lua"
+  ],
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "$path": "src/ReplicatedStorage",
+      "$properties": {
+        "Archivable": true
+      },
+      "$ignoreUnknownInstances": true,
+      "ExplicitPart": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true
+        }
+      }
+    },
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "$path": "missing"
+    }
+  }
+}

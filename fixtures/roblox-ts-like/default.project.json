@@ -1,0 +1,21 @@
+{
+  "name": "RobloxTsLike",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "$path": "out/shared"
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$path": "out/server"
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$path": "out/client"
+      }
+    }
+  }
+}
