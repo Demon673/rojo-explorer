@@ -1,5 +1,7 @@
 node_modules/
 out/
+!fixtures/**/out/
+!fixtures/**/out/**
 dist/
 *.vsix
 *.log
