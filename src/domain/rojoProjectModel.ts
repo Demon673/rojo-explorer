@@ -123,6 +123,7 @@ export async function buildRojoProjectModel(
     fsPath: normalizedProjectPath,
     kind: "project",
     exists: true,
+    entryType: "file",
   };
 
   return { config, root, diagnostics };
@@ -143,8 +144,9 @@ async function buildInstanceFromDescription(
   const mappedPath = typeof value.$path === "string" ? resolveRojoPath(context.config.projectRootPath, value.$path) : undefined;
   const projectProperties = asProperties(value.$properties);
   const projectIgnoreUnknown = typeof value.$ignoreUnknownInstances === "boolean" ? value.$ignoreUnknownInstances : undefined;
+  const mappedEntryType = mappedPath ? await context.fs.stat(mappedPath) : undefined;
   let source: RojoSourceRef | undefined = mappedPath
-    ? { fsPath: mappedPath, kind: "projectTree", exists: (await context.fs.stat(mappedPath)) !== undefined }
+    ? { fsPath: mappedPath, kind: "projectTree", exists: mappedEntryType !== undefined, entryType: mappedEntryType }
     : undefined;
   const diagnostics: RojoDiagnostic[] = [];
   let className = projectClassName ?? inferServiceClassName(name) ?? (isRoot ? "DataModel" : "Folder");
@@ -154,8 +156,7 @@ async function buildInstanceFromDescription(
   let ignoreUnknownInstances = projectIgnoreUnknown;
 
   if (mappedPath) {
-    const stat = await context.fs.stat(mappedPath);
-    if (!stat) {
+    if (!mappedEntryType) {
       const diagnostic = createDiagnostic(
         "pathNotFound",
         "warning",
@@ -165,7 +166,7 @@ async function buildInstanceFromDescription(
       );
       diagnostics.push(diagnostic);
       context.diagnostics.push(diagnostic);
-    } else if (stat === "directory") {
+    } else if (mappedEntryType === "directory") {
       const analysis = await analyzeDirectoryAsInstance(name, mappedPath, context, studioPath);
       if (!projectClassName) {
         className = analysis.className;
@@ -242,6 +243,7 @@ async function analyzeDirectoryAsInstance(
         fsPath: defaultProjectPath,
         kind: "projectInclusion",
         exists: true,
+        entryType: "file",
       },
       properties: included.properties,
       ignoreUnknownInstances: included.ignoreUnknownInstances,
@@ -282,6 +284,7 @@ async function analyzeDirectoryAsInstance(
     fsPath: directoryPath,
     kind: "directory",
     exists: true,
+    entryType: "directory",
   };
 
   if (initScript) {
@@ -291,6 +294,7 @@ async function analyzeDirectoryAsInstance(
       fsPath: path.join(directoryPath, initScript.entry.name),
       kind: "initScript",
       exists: true,
+      entryType: "file",
     };
   }
 
@@ -328,6 +332,7 @@ async function buildIncludedProjectNode(
       fsPath: projectFilePath,
       kind: "projectInclusion",
       exists: true,
+      entryType: "file",
     },
     children: updateChildStudioPaths(included.root.children, studioPath),
   };
@@ -390,6 +395,7 @@ async function buildDirectoryChildren(
           fsPath: entryPath,
           kind: rule.sourceKind,
           exists: true,
+          entryType: "file",
         },
         children: [],
         diagnostics: [],
@@ -530,6 +536,7 @@ function createFallbackRoot(projectName: string, projectFilePath: string): RojoI
       fsPath: projectFilePath,
       kind: "project",
       exists: true,
+      entryType: "file",
     },
     children: [],
     diagnostics: [],

@@ -50,6 +50,7 @@ export interface RojoSourceRef {
   fsPath: string;
   kind: RojoSourceKind;
   exists: boolean;
+  entryType?: RojoFsEntryType;
 }
 
 export interface RojoProjectConfig {

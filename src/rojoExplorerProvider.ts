@@ -9,6 +9,7 @@ import {
   RojoInstanceNode,
   RojoProjectModel,
 } from "./domain";
+import { shouldOpenResourceOnClick } from "./explorerNodeBehavior";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 import { findRojoProjectFiles } from "./vscodeRojoProjects";
 
@@ -89,7 +90,12 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     item.resourceUri = node.resourceUri;
     item.iconPath = this.getIcon(node);
 
-    if (node.resourceUri && node.kind === "instance") {
+    if (shouldOpenResourceOnClick({
+      kind: node.kind,
+      hasChildren: this.hasChildren(node),
+      hasResource: Boolean(node.resourceUri),
+      sourceEntryType: node.instance?.source?.entryType,
+    })) {
       item.command = {
         command: "rojoExplorer.openResource",
         title: vscode.l10n.t("Open Resource"),

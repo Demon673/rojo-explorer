@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.1.4 - Unreleased
+
+- Fix folder-backed Explorer nodes opening source directories on normal click.
+- Keep normal click-to-open behavior only for file-backed leaf resources.
+
 ## 0.1.3 - Unreleased
 
 - Add Simplified Chinese localization for extension manifest text and runtime messages.
