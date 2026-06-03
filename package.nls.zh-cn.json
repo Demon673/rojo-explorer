@@ -8,5 +8,9 @@
   "rojoExplorer.commands.revealInVsCodeExplorer.title": "在 VS Code 资源管理器中显示",
   "rojoExplorer.commands.copyStudioPath.title": "复制 Studio 路径",
   "rojoExplorer.commands.copySourcePath.title": "复制源路径",
+  "rojoExplorer.commands.createFolder.title": "新建文件夹",
+  "rojoExplorer.commands.createScript.title": "新建 Script",
+  "rojoExplorer.commands.createLocalScript.title": "新建 LocalScript",
+  "rojoExplorer.commands.createModuleScript.title": "新建 ModuleScript",
   "rojoExplorer.views.explorer.name": "Rojo 资源管理器"
 }

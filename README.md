@@ -19,8 +19,11 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Copies Studio paths like `game.ReplicatedStorage.Shared.Foo`.
 - Copies source filesystem paths from mapped resources and diagnostics.
 - Provides Simplified Chinese localization for VS Code users running the `zh-cn` display language.
+- Creates new Rojo-backed folders, scripts, local scripts, and module scripts under filesystem-backed folder resources.
 
-Rojo Explorer v1 is intentionally read-only. It does not create, rename, delete, move, build, serve, or sync resources.
+Resource creation is intentionally narrow in v0.2.0: it creates source files and directories only under mapped directories, checks for generated path conflicts, and does not rename, delete, move, serve, build, or sync resources.
+
+Rojo Explorer does not rename, delete, move, build, serve, or sync resources.
 
 ## Development
 

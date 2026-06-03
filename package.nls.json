@@ -8,5 +8,9 @@
   "rojoExplorer.commands.revealInVsCodeExplorer.title": "Reveal in VS Code Explorer",
   "rojoExplorer.commands.copyStudioPath.title": "Copy Studio Path",
   "rojoExplorer.commands.copySourcePath.title": "Copy Source Path",
+  "rojoExplorer.commands.createFolder.title": "New Folder",
+  "rojoExplorer.commands.createScript.title": "New Script",
+  "rojoExplorer.commands.createLocalScript.title": "New LocalScript",
+  "rojoExplorer.commands.createModuleScript.title": "New ModuleScript",
   "rojoExplorer.views.explorer.name": "Rojo Explorer"
 }

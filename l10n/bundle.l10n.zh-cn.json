@@ -22,5 +22,19 @@
   "Meta file has no matching Rojo resource: {0}": "meta 文件没有匹配的 Rojo 资源：{0}",
   "error": "错误",
   "warning": "警告",
-  "info": "信息"
+  "info": "信息",
+  "Select a filesystem-backed folder resource first.": "请先选择一个由文件系统目录支持的资源。",
+  "Enter {0} name": "输入 {0} 名称",
+  "Resource name": "资源名称",
+  "Resource name is required.": "资源名称不能为空。",
+  "Resource name cannot contain path separators.": "资源名称不能包含路径分隔符。",
+  "Folder": "文件夹",
+  "Script": "脚本",
+  "LocalScript": "本地脚本",
+  "ModuleScript": "模块脚本",
+  "Created {0}: {1}": "已创建 {0}：{1}",
+  "Resource names cannot be empty or contain path separators.": "资源名称不能为空，也不能包含路径分隔符。",
+  "Resources can only be created under filesystem-backed directories.": "只能在由文件系统目录支持的资源下创建子资源。",
+  "A resource with that Rojo name already exists: {0}": "已存在同名 Rojo 资源：{0}",
+  "A resource with that Rojo name already exists.": "已存在同名 Rojo 资源。"
 }

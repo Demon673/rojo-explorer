@@ -37,6 +37,10 @@
     "onCommand:rojoExplorer.revealInVsCodeExplorer",
     "onCommand:rojoExplorer.copyStudioPath",
     "onCommand:rojoExplorer.copySourcePath",
+    "onCommand:rojoExplorer.createFolder",
+    "onCommand:rojoExplorer.createScript",
+    "onCommand:rojoExplorer.createLocalScript",
+    "onCommand:rojoExplorer.createModuleScript",
     "workspaceContains:**/*.project.json"
   ],
   "main": "./out/extension.js",
@@ -76,6 +80,26 @@
         "command": "rojoExplorer.copySourcePath",
         "title": "%rojoExplorer.commands.copySourcePath.title%",
         "icon": "$(clippy)"
+      },
+      {
+        "command": "rojoExplorer.createFolder",
+        "title": "%rojoExplorer.commands.createFolder.title%",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "rojoExplorer.createScript",
+        "title": "%rojoExplorer.commands.createScript.title%",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "rojoExplorer.createLocalScript",
+        "title": "%rojoExplorer.commands.createLocalScript.title%",
+        "icon": "$(device-mobile)"
+      },
+      {
+        "command": "rojoExplorer.createModuleScript",
+        "title": "%rojoExplorer.commands.createModuleScript.title%",
+        "icon": "$(symbol-module)"
       }
     ],
     "menus": {
@@ -116,6 +140,26 @@
           "command": "rojoExplorer.copySourcePath",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /resource/",
           "group": "navigation"
+        },
+        {
+          "command": "rojoExplorer.createFolder",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@1"
+        },
+        {
+          "command": "rojoExplorer.createScript",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@2"
+        },
+        {
+          "command": "rojoExplorer.createLocalScript",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@3"
+        },
+        {
+          "command": "rojoExplorer.createModuleScript",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@4"
         }
       ]
     },

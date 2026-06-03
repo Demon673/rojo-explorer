@@ -70,6 +70,10 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     this.onDidChangeTreeDataEmitter.fire(undefined);
   }
 
+  canCreateChildren(node?: ExplorerNode): boolean {
+    return node?.kind === "instance" && node.instance?.source?.entryType === "directory" && Boolean(node.resourceUri);
+  }
+
   private scheduleRefresh(): void {
     if (this.refreshTimer) {
       clearTimeout(this.refreshTimer);
@@ -87,6 +91,9 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     item.description = node.description;
     item.tooltip = node.tooltip ?? this.createTooltip(node);
     item.contextValue = `${node.kind}${node.resourceUri ? ".resource" : ""}${node.studioPath ? ".studioPath" : ""}`;
+    if (this.canCreateChildren(node)) {
+      item.contextValue += ".createChildren";
+    }
     item.resourceUri = node.resourceUri;
     item.iconPath = this.getIcon(node);
 

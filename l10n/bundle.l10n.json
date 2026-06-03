@@ -22,5 +22,19 @@
   "Meta file has no matching Rojo resource: {0}": "Meta file has no matching Rojo resource: {0}",
   "error": "error",
   "warning": "warning",
-  "info": "info"
+  "info": "info",
+  "Select a filesystem-backed folder resource first.": "Select a filesystem-backed folder resource first.",
+  "Enter {0} name": "Enter {0} name",
+  "Resource name": "Resource name",
+  "Resource name is required.": "Resource name is required.",
+  "Resource name cannot contain path separators.": "Resource name cannot contain path separators.",
+  "Folder": "Folder",
+  "Script": "Script",
+  "LocalScript": "LocalScript",
+  "ModuleScript": "ModuleScript",
+  "Created {0}: {1}": "Created {0}: {1}",
+  "Resource names cannot be empty or contain path separators.": "Resource names cannot be empty or contain path separators.",
+  "Resources can only be created under filesystem-backed directories.": "Resources can only be created under filesystem-backed directories.",
+  "A resource with that Rojo name already exists: {0}": "A resource with that Rojo name already exists: {0}",
+  "A resource with that Rojo name already exists.": "A resource with that Rojo name already exists."
 }

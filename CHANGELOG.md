@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.2.0 - Unreleased
+
+- Add resource creation commands for Folder, Script, LocalScript, and ModuleScript.
+- Create resources only under filesystem-backed folder nodes, with generated path conflict checks.
+
 ## 0.1.4 - Unreleased
 
 - Fix folder-backed Explorer nodes opening source directories on normal click.
