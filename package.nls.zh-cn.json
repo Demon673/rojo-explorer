@@ -17,6 +17,7 @@
   "rojoExplorer.commands.createModel.title": "新建 Model",
   "rojoExplorer.commands.createRemoteEvent.title": "新建 RemoteEvent",
   "rojoExplorer.commands.createRemoteFunction.title": "新建 RemoteFunction",
+  "rojoExplorer.commands.createBindableEvent.title": "新建 BindableEvent",
   "rojoExplorer.commands.createStringValue.title": "新建 StringValue",
   "rojoExplorer.commands.createLocalizationTable.title": "新建 LocalizationTable",
   "rojoExplorer.commands.createJsonModule.title": "新建 JSON Module",

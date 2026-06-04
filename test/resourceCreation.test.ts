@@ -112,6 +112,33 @@ describe("resource creation planning", () => {
     });
   });
 
+  it("creates BindableEvents as directories with init.meta.json className", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "RoundChanged",
+        kind: "BindableEvent",
+      },
+      fsWithExistingDirectories([root]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        kind: "BindableEvent",
+        resourceName: "RoundChanged",
+        targetPath: path.join(root, "RoundChanged"),
+        entryType: "directory",
+        additionalFiles: [
+          {
+            targetPath: path.join(root, "RoundChanged", "init.meta.json"),
+            content: "{\n  \"className\": \"BindableEvent\"\n}\n",
+          },
+        ],
+      },
+    });
+  });
+
   it("creates StringValues as text files", async () => {
     const result = await planResourceCreation(
       {

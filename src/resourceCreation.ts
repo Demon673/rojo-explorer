@@ -11,6 +11,7 @@ export type CreatableResourceKind =
   | "Model"
   | "RemoteEvent"
   | "RemoteFunction"
+  | "BindableEvent"
   | "StringValue"
   | "LocalizationTable"
   | "JSONModule"
@@ -124,6 +125,8 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
       return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "RemoteEvent");
     case "RemoteFunction":
       return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "RemoteFunction");
+    case "BindableEvent":
+      return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "BindableEvent");
     case "StringValue":
       return {
         kind,
@@ -168,7 +171,7 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
 function scriptPlan(
   parentDirectoryPath: string,
   resourceName: string,
-  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "RemoteEvent" | "RemoteFunction" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
+  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "RemoteEvent" | "RemoteFunction" | "BindableEvent" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
   suffix: string,
 ): ResourceCreationPlan {
   return {
@@ -181,7 +184,7 @@ function scriptPlan(
 }
 
 function defaultScriptContent(
-  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "RemoteEvent" | "RemoteFunction" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
+  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "RemoteEvent" | "RemoteFunction" | "BindableEvent" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
 ): string {
   if (kind === "ModuleScript") {
     return "return {}\n";
@@ -193,7 +196,7 @@ function defaultScriptContent(
 function metaBackedDirectoryPlan(
   parentDirectoryPath: string,
   resourceName: string,
-  kind: Extract<CreatableResourceKind, "Model" | "RemoteEvent" | "RemoteFunction">,
+  kind: Extract<CreatableResourceKind, "Model" | "RemoteEvent" | "RemoteFunction" | "BindableEvent">,
   className: string,
 ): ResourceCreationPlan {
   const targetPath = path.join(parentDirectoryPath, resourceName);

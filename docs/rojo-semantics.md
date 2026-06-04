@@ -47,6 +47,7 @@ Rojo Explorer builds a Studio-style resource tree from `*.project.json` files an
 - Filesystem-backed Model creation creates a directory plus `init.meta.json` with `className` set to `Model`; it does not generate `.rbxm` or `.rbxmx` assets.
 - Filesystem-backed RemoteEvent creation creates a directory plus `init.meta.json` with `className` set to `RemoteEvent`; it does not generate binary Roblox assets.
 - Filesystem-backed RemoteFunction creation creates a directory plus `init.meta.json` with `className` set to `RemoteFunction`; it does not generate binary Roblox assets.
+- Filesystem-backed BindableEvent creation creates a directory plus `init.meta.json` with `className` set to `BindableEvent`; it does not generate binary Roblox assets.
 - Filesystem-backed JSON Module creation creates a plain `.json` file with `{}` content; it does not create `.model.json` or `.project.json` files.
 - Filesystem-backed TOML Module creation creates a plain `.toml` file, matching Rojo's TOML module sync rule.
 - Filesystem-backed StringValue creation creates a `.txt` file, matching Rojo's plain text sync rule.

@@ -41,6 +41,7 @@
   "Model": "Model",
   "RemoteEvent": "RemoteEvent",
   "RemoteFunction": "RemoteFunction",
+  "BindableEvent": "BindableEvent",
   "StringValue": "StringValue",
   "LocalizationTable": "LocalizationTable",
   "JSON Module": "JSON Module",
