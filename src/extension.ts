@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 
 import { ExplorerNode, RojoExplorerProvider } from "./rojoExplorerProvider";
 import { planProjectMappingRename, ProjectMappingRenameFailureReason } from "./projectMappingRename";
+import { createRenameInputOptions } from "./renameInputOptions";
 import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
 import { planResourceRename, ResourceRenameFailureReason } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
@@ -213,24 +214,13 @@ async function renameProjectMapping(
     return;
   }
 
-  const newName = await vscode.window.showInputBox({
+  const newName = await vscode.window.showInputBox(createRenameInputOptions({
     prompt: vscode.l10n.t("Rename Studio name for {0}", currentName),
     placeHolder: vscode.l10n.t("Studio name"),
-    value: currentName,
-    valueSelection: [0, currentName.length],
-    validateInput(value) {
-      const trimmed = value.trim();
-      if (trimmed.length === 0) {
-        return vscode.l10n.t("Studio name is required.");
-      }
-
-      if (trimmed.includes("/") || trimmed.includes("\\")) {
-        return vscode.l10n.t("Studio name cannot contain path separators.");
-      }
-
-      return undefined;
-    },
-  });
+    currentName,
+    requiredMessage: vscode.l10n.t("Studio name is required."),
+    pathSeparatorMessage: vscode.l10n.t("Studio name cannot contain path separators."),
+  }));
 
   if (newName === undefined) {
     return;
@@ -267,24 +257,13 @@ async function renameResource(
   }
 
   const currentName = node.instance.name;
-  const newName = await vscode.window.showInputBox({
+  const newName = await vscode.window.showInputBox(createRenameInputOptions({
     prompt: vscode.l10n.t("Rename {0}", currentName),
     placeHolder: vscode.l10n.t("Resource name"),
-    value: currentName,
-    valueSelection: [0, currentName.length],
-    validateInput(value) {
-      const trimmed = value.trim();
-      if (trimmed.length === 0) {
-        return vscode.l10n.t("Resource name is required.");
-      }
-
-      if (trimmed.includes("/") || trimmed.includes("\\")) {
-        return vscode.l10n.t("Resource name cannot contain path separators.");
-      }
-
-      return undefined;
-    },
-  });
+    currentName,
+    requiredMessage: vscode.l10n.t("Resource name is required."),
+    pathSeparatorMessage: vscode.l10n.t("Resource name cannot contain path separators."),
+  }));
 
   if (newName === undefined) {
     return;
