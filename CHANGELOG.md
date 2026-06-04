@@ -7,6 +7,7 @@ All notable changes to Rojo Explorer will be documented in this file.
 - Add a resource rename command for filesystem-discovered Rojo resources.
 - Preserve Rojo file suffixes and sibling `.meta.json` files during rename planning.
 - Keep explicit project `$path` mappings out of rename until project JSON edits are supported.
+- Mark project-controlled resources in the tree and add an entry to open the owning project file.
 
 ## 0.2.0 - Unreleased
 

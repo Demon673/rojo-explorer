@@ -84,6 +84,15 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.renameResource", (node?: ExplorerNode) =>
       renameResource(provider, fileSystem, node),
     ),
+    vscode.commands.registerCommand("rojoExplorer.editProjectMapping", async (node?: ExplorerNode) => {
+      const projectMappingUri = provider.getProjectMappingUri(node);
+      if (!projectMappingUri) {
+        void vscode.window.showWarningMessage(vscode.l10n.t("Select a project-controlled resource first."));
+        return;
+      }
+
+      await openTextDocument(projectMappingUri);
+    }),
   );
 }
 

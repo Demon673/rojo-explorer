@@ -42,6 +42,7 @@
     "onCommand:rojoExplorer.createLocalScript",
     "onCommand:rojoExplorer.createModuleScript",
     "onCommand:rojoExplorer.renameResource",
+    "onCommand:rojoExplorer.editProjectMapping",
     "workspaceContains:**/*.project.json"
   ],
   "main": "./out/extension.js",
@@ -106,6 +107,11 @@
         "command": "rojoExplorer.renameResource",
         "title": "%rojoExplorer.commands.renameResource.title%",
         "icon": "$(edit)"
+      },
+      {
+        "command": "rojoExplorer.editProjectMapping",
+        "title": "%rojoExplorer.commands.editProjectMapping.title%",
+        "icon": "$(json)"
       }
     ],
     "menus": {
@@ -151,6 +157,11 @@
           "command": "rojoExplorer.renameResource",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /renameable/",
           "group": "resource-edit@1"
+        },
+        {
+          "command": "rojoExplorer.editProjectMapping",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /projectControlled/",
+          "group": "resource-edit@2"
         },
         {
           "command": "rojoExplorer.createFolder",

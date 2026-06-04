@@ -11,6 +11,10 @@
   "No Rojo project file was found in this workspace folder.": "No Rojo project file was found in this workspace folder.",
   "{0} - error": "{0} - error",
   "{0} - warning": "{0} - warning",
+  "{0} - {1}": "{0} - {1}",
+  "Project file": "Project file",
+  "Project mapping": "Project mapping",
+  "Included project": "Included project",
   "Invalid JSON: {0}": "Invalid JSON: {0}",
   "Rojo project file is missing a valid tree object.": "Rojo project file is missing a valid tree object.",
   "Mapped path does not exist: {0}": "Mapped path does not exist: {0}",
@@ -41,5 +45,6 @@
   "Rename {0}": "Rename {0}",
   "Renamed {0} to {1}": "Renamed {0} to {1}",
   "Source path does not exist.": "Source path does not exist.",
-  "Resource name is unchanged.": "Resource name is unchanged."
+  "Resource name is unchanged.": "Resource name is unchanged.",
+  "Select a project-controlled resource first.": "Select a project-controlled resource first."
 }

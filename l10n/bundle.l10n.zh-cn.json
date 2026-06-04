@@ -11,6 +11,10 @@
   "No Rojo project file was found in this workspace folder.": "此工作区文件夹中未找到 Rojo 项目文件。",
   "{0} - error": "{0} - 错误",
   "{0} - warning": "{0} - 警告",
+  "{0} - {1}": "{0} - {1}",
+  "Project file": "项目文件",
+  "Project mapping": "项目映射",
+  "Included project": "嵌套项目",
   "Invalid JSON: {0}": "JSON 无效：{0}",
   "Rojo project file is missing a valid tree object.": "Rojo 项目文件缺少有效的 tree 对象。",
   "Mapped path does not exist: {0}": "映射路径不存在：{0}",
@@ -41,5 +45,6 @@
   "Rename {0}": "重命名 {0}",
   "Renamed {0} to {1}": "已将 {0} 重命名为 {1}",
   "Source path does not exist.": "源路径不存在。",
-  "Resource name is unchanged.": "资源名称未变化。"
+  "Resource name is unchanged.": "资源名称未变化。",
+  "Select a project-controlled resource first.": "请先选择一个项目控制资源。"
 }

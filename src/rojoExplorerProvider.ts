@@ -10,6 +10,11 @@ import {
   RojoProjectModel,
 } from "./domain";
 import { shouldOpenResourceOnClick } from "./explorerNodeBehavior";
+import {
+  getProjectControlBadgeForSourceKind,
+  getProjectMappingFilePath,
+  ProjectControlBadge,
+} from "./projectControlledResources";
 import { canRenameSourceKind } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 import { findRojoProjectFiles } from "./vscodeRojoProjects";
@@ -84,6 +89,16 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     return canRenameSourceKind(source.kind);
   }
 
+  canEditProjectMapping(node?: ExplorerNode): boolean {
+    return this.getProjectMappingUri(node) !== undefined;
+  }
+
+  getProjectMappingUri(node?: ExplorerNode): vscode.Uri | undefined {
+    const source = node?.instance?.source;
+    const projectFilePath = getProjectMappingFilePath(source?.kind, source?.fsPath, node?.projectUri?.fsPath);
+    return projectFilePath ? vscode.Uri.file(projectFilePath) : undefined;
+  }
+
   private scheduleRefresh(): void {
     if (this.refreshTimer) {
       clearTimeout(this.refreshTimer);
@@ -106,6 +121,9 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     }
     if (this.canRenameResource(node)) {
       item.contextValue += ".renameable";
+    }
+    if (this.canEditProjectMapping(node)) {
+      item.contextValue += ".projectControlled";
     }
     item.resourceUri = node.resourceUri;
     item.iconPath = this.getIcon(node);
@@ -293,21 +311,26 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
   }
 
   private createInstanceDescription(instance: RojoInstanceNode): string {
+    const sourceBadge = localizeProjectControlBadge(getProjectControlBadgeForSourceKind(instance.source?.kind));
+    const baseDescription = sourceBadge ? vscode.l10n.t("{0} - {1}", instance.className, sourceBadge) : instance.className;
+
     if (instance.diagnostics.some((diagnostic) => diagnostic.severity === "error")) {
-      return vscode.l10n.t("{0} - error", instance.className);
+      return vscode.l10n.t("{0} - error", baseDescription);
     }
 
     if (instance.diagnostics.some((diagnostic) => diagnostic.severity === "warning")) {
-      return vscode.l10n.t("{0} - warning", instance.className);
+      return vscode.l10n.t("{0} - warning", baseDescription);
     }
 
-    return instance.className;
+    return baseDescription;
   }
 
   private createInstanceTooltip(instance: RojoInstanceNode): string {
     const diagnostics = instance.diagnostics.map((diagnostic) => this.formatDiagnosticLine(diagnostic));
+    const sourceBadge = localizeProjectControlBadge(getProjectControlBadgeForSourceKind(instance.source?.kind));
     return [
       instance.className,
+      sourceBadge,
       formatNodeStudioPath(instance),
       instance.source?.fsPath,
       ...diagnostics,
@@ -370,6 +393,19 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
       kind: "message",
       label,
     };
+  }
+}
+
+function localizeProjectControlBadge(badge: ProjectControlBadge | undefined): string | undefined {
+  switch (badge) {
+    case "projectFile":
+      return vscode.l10n.t("Project file");
+    case "projectMapping":
+      return vscode.l10n.t("Project mapping");
+    case "includedProject":
+      return vscode.l10n.t("Included project");
+    case undefined:
+      return undefined;
   }
 }
 
