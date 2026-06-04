@@ -31,6 +31,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
       await openTextDocument(node.resourceUri);
     }),
+    vscode.commands.registerCommand("rojoExplorer.selectNode", () => undefined),
     vscode.commands.registerCommand("rojoExplorer.revealInFileExplorer", async (node?: ExplorerNode) => {
       if (!node?.resourceUri) {
         return;

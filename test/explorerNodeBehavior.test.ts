@@ -1,9 +1,18 @@
 import { describe, expect, it } from "vitest";
 
-import { shouldOpenResourceOnClick } from "../src/explorerNodeBehavior";
+import { getExplorerClickAction, shouldOpenResourceOnClick } from "../src/explorerNodeBehavior";
 
 describe("Explorer click behavior", () => {
   it("opens file-backed leaf instances on click", () => {
+    expect(
+      getExplorerClickAction({
+        kind: "instance",
+        hasChildren: false,
+        hasResource: true,
+        sourceEntryType: "file",
+      }),
+    ).toBe("openResource");
+
     expect(
       shouldOpenResourceOnClick({
         kind: "instance",
@@ -16,6 +25,15 @@ describe("Explorer click behavior", () => {
 
   it("does not open directory-backed instances on click", () => {
     expect(
+      getExplorerClickAction({
+        kind: "instance",
+        hasChildren: false,
+        hasResource: true,
+        sourceEntryType: "directory",
+      }),
+    ).toBeUndefined();
+
+    expect(
       shouldOpenResourceOnClick({
         kind: "instance",
         hasChildren: false,
@@ -26,6 +44,15 @@ describe("Explorer click behavior", () => {
   });
 
   it("does not open expandable instances on click even when backed by an init file", () => {
+    expect(
+      getExplorerClickAction({
+        kind: "instance",
+        hasChildren: true,
+        hasResource: true,
+        sourceEntryType: "file",
+      }),
+    ).toBe("selectOnly");
+
     expect(
       shouldOpenResourceOnClick({
         kind: "instance",
@@ -46,6 +73,19 @@ describe("Explorer click behavior", () => {
           sourceEntryType: "file",
         }),
       ).toBe(false);
+    }
+  });
+
+  it("selects expandable project and folder nodes without using label click to open them", () => {
+    for (const kind of ["project", "workspaceFolder", "instance"]) {
+      expect(
+        getExplorerClickAction({
+          kind,
+          hasChildren: true,
+          hasResource: true,
+          sourceEntryType: "directory",
+        }),
+      ).toBe("selectOnly");
     }
   });
 });

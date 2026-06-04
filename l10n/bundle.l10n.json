@@ -3,6 +3,7 @@
   "Copied source path: {0}": "Copied source path: {0}",
   "Source path does not exist: {0}": "Source path does not exist: {0}",
   "Open Resource": "Open Resource",
+  "Select Resource": "Select Resource",
   "Open Diagnostic Source": "Open Diagnostic Source",
   "No Rojo project file was found in this workspace.": "No Rojo project file was found in this workspace.",
   "Select a Rojo project file": "Select a Rojo project file",

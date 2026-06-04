@@ -3,6 +3,7 @@
   "Copied source path: {0}": "已复制源路径：{0}",
   "Source path does not exist: {0}": "源路径不存在：{0}",
   "Open Resource": "打开资源",
+  "Select Resource": "选择资源",
   "Open Diagnostic Source": "打开诊断源",
   "No Rojo project file was found in this workspace.": "此工作区中未找到 Rojo 项目文件。",
   "Select a Rojo project file": "选择 Rojo 项目文件",

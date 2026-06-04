@@ -16,6 +16,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Shows diagnostics for invalid JSON, missing mapped paths, duplicate init scripts, orphan meta files, and unsupported meta usage.
 - Shows diagnostics as expandable tree nodes, not only tooltip text.
 - Opens or reveals mapped source files and folders from the tree context menu.
+- Keeps expandable nodes Studio-like: clicking the label selects the node, and the disclosure arrow expands it.
 - Copies Studio paths like `game.ReplicatedStorage.Shared.Foo`.
 - Copies source filesystem paths from mapped resources and diagnostics.
 - Provides Simplified Chinese localization for VS Code users running the `zh-cn` display language.

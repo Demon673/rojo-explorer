@@ -7,6 +7,16 @@ export interface ExplorerClickBehaviorNode {
   sourceEntryType?: RojoFsEntryType;
 }
 
+export type ExplorerClickAction = "openResource" | "selectOnly" | undefined;
+
+export function getExplorerClickAction(node: ExplorerClickBehaviorNode): ExplorerClickAction {
+  if (node.hasChildren) {
+    return "selectOnly";
+  }
+
+  return shouldOpenResourceOnClick(node) ? "openResource" : undefined;
+}
+
 export function shouldOpenResourceOnClick(node: ExplorerClickBehaviorNode): boolean {
   return node.kind === "instance" && node.hasResource && node.sourceEntryType === "file" && !node.hasChildren;
 }

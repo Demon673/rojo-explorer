@@ -4,6 +4,7 @@
   "rojoExplorer.commands.refresh.title": "刷新 Rojo 资源管理器",
   "rojoExplorer.commands.openRojoProject.title": "打开 Rojo 项目",
   "rojoExplorer.commands.openResource.title": "打开资源",
+  "rojoExplorer.commands.selectNode.title": "选择资源",
   "rojoExplorer.commands.revealInFileExplorer.title": "在文件资源管理器中显示",
   "rojoExplorer.commands.revealInVsCodeExplorer.title": "在 VS Code 资源管理器中显示",
   "rojoExplorer.commands.copyStudioPath.title": "复制 Studio 路径",

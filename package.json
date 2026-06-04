@@ -34,6 +34,7 @@
     "onView:rojoExplorer.views.explorer",
     "onCommand:rojoExplorer.refresh",
     "onCommand:rojoExplorer.openRojoProject",
+    "onCommand:rojoExplorer.selectNode",
     "onCommand:rojoExplorer.revealInVsCodeExplorer",
     "onCommand:rojoExplorer.copyStudioPath",
     "onCommand:rojoExplorer.copySourcePath",
@@ -62,6 +63,10 @@
         "command": "rojoExplorer.openResource",
         "title": "%rojoExplorer.commands.openResource.title%",
         "icon": "$(go-to-file)"
+      },
+      {
+        "command": "rojoExplorer.selectNode",
+        "title": "%rojoExplorer.commands.selectNode.title%"
       },
       {
         "command": "rojoExplorer.revealInFileExplorer",

@@ -4,6 +4,7 @@
   "rojoExplorer.commands.refresh.title": "Refresh Rojo Explorer",
   "rojoExplorer.commands.openRojoProject.title": "Open Rojo Project",
   "rojoExplorer.commands.openResource.title": "Open Resource",
+  "rojoExplorer.commands.selectNode.title": "Select Resource",
   "rojoExplorer.commands.revealInFileExplorer.title": "Reveal in File Explorer",
   "rojoExplorer.commands.revealInVsCodeExplorer.title": "Reveal in VS Code Explorer",
   "rojoExplorer.commands.copyStudioPath.title": "Copy Studio Path",

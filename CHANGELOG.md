@@ -9,6 +9,7 @@ All notable changes to Rojo Explorer will be documented in this file.
 - Keep explicit project `$path` mappings out of rename until project JSON edits are supported.
 - Mark project-controlled resources in the tree and add an entry to open the owning project file.
 - Allow project mapping Studio names to be renamed by updating the corresponding `.project.json` key.
+- Keep expandable tree nodes selected on label click so expansion stays on the disclosure arrow.
 
 ## 0.2.0 - Unreleased
 
