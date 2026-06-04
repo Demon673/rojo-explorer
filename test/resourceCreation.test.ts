@@ -85,6 +85,33 @@ describe("resource creation planning", () => {
     });
   });
 
+  it("creates RemoteFunctions as directories with init.meta.json className", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "GetRoundState",
+        kind: "RemoteFunction",
+      },
+      fsWithExistingDirectories([root]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        kind: "RemoteFunction",
+        resourceName: "GetRoundState",
+        targetPath: path.join(root, "GetRoundState"),
+        entryType: "directory",
+        additionalFiles: [
+          {
+            targetPath: path.join(root, "GetRoundState", "init.meta.json"),
+            content: "{\n  \"className\": \"RemoteFunction\"\n}\n",
+          },
+        ],
+      },
+    });
+  });
+
   it("creates StringValues as text files", async () => {
     const result = await planResourceCreation(
       {

@@ -112,6 +112,9 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.createRemoteEvent", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "RemoteEvent"),
     ),
+    vscode.commands.registerCommand("rojoExplorer.createRemoteFunction", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "RemoteFunction"),
+    ),
     vscode.commands.registerCommand("rojoExplorer.createStringValue", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "StringValue"),
     ),
@@ -780,6 +783,8 @@ function localizeResourceKind(kind: CreatableResourceKind): string {
       return vscode.l10n.t("Model");
     case "RemoteEvent":
       return vscode.l10n.t("RemoteEvent");
+    case "RemoteFunction":
+      return vscode.l10n.t("RemoteFunction");
     case "StringValue":
       return vscode.l10n.t("StringValue");
     case "LocalizationTable":

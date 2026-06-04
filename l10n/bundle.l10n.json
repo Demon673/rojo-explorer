@@ -40,6 +40,7 @@
   "ModuleScript": "ModuleScript",
   "Model": "Model",
   "RemoteEvent": "RemoteEvent",
+  "RemoteFunction": "RemoteFunction",
   "StringValue": "StringValue",
   "LocalizationTable": "LocalizationTable",
   "JSON Module": "JSON Module",
