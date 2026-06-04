@@ -1,6 +1,6 @@
 # Rojo Semantics
 
-This file is the implementation contract for Rojo Explorer's read-only v1 model. Rules marked as implemented must be backed by official Rojo documentation or an explicitly named release note.
+This file is the implementation contract for Rojo Explorer's Rojo project model and resource-management safety boundaries. Rules marked as implemented must be backed by official Rojo documentation or an explicitly named release note.
 
 ## Sources
 
@@ -10,9 +10,9 @@ This file is the implementation contract for Rojo Explorer's read-only v1 model.
 - Rojo releases for version-specific behavior: https://github.com/rojo-rbx/rojo/releases
 - roblox-ts Rojo workflow reference: https://roblox-ts.com/docs/guides/syncing-with-rojo/
 
-## v1 Scope
+## Model Scope
 
-Rojo Explorer v1 is read-only. It builds a Studio-style resource tree from `*.project.json` files and mapped filesystem contents. It does not start or stop Rojo servers, modify Roblox assets, create resources, rename resources, delete resources, or perform Studio sync.
+Rojo Explorer builds a Studio-style resource tree from `*.project.json` files and mapped filesystem contents. It does not start or stop Rojo servers, modify Roblox binary assets, build place files, or perform Studio sync.
 
 ## Implemented Rules
 
@@ -40,6 +40,13 @@ Rojo Explorer v1 is read-only. It builds a Studio-style resource tree from `*.pr
 | `init.meta.json` may change a containing directory's className. | implemented | Rojo Sync Details |
 | A directory containing `default.project.json` uses that project instead of normal directory contents. | implemented | Rojo Sync Details |
 | `globIgnorePaths` hides matching filesystem paths from scanned mapped folders. | implemented | Rojo Project Format |
+
+## Resource Management Notes
+
+- Filesystem-backed create, rename, move, and delete commands operate only on resources discovered from mapped source folders.
+- Project-controlled resources are edited through `.project.json`, not through filesystem rename, move, or delete commands.
+- Project mapping source path edits update the selected tree node's `$path` value. New paths are written relative to the project file when possible, matching Rojo's project format behavior.
+- File-backed `$path` targets must match Rojo's supported sync rules before the extension writes the project file.
 
 ## Version-Specific Rules
 

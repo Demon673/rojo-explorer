@@ -26,8 +26,9 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Deletes Rojo-backed filesystem resources after confirmation, using the OS trash when available.
 - Marks project-controlled resources, such as project file mappings and included projects.
 - Edits project mapping Studio names by renaming the corresponding key in `.project.json` without moving the mapped source path.
+- Edits project mapping source paths by updating `$path` values in `.project.json` after validating the selected source path.
 
-Resource management is intentionally narrow: creation works under mapped directories, filesystem rename, move, and delete work only for filesystem-discovered resources, and project mapping rename changes only Studio names defined in project files. These paths check for generated path, sibling mapping, or source existence conflicts.
+Resource management is intentionally narrow: creation works under mapped directories, filesystem rename, move, and delete work only for filesystem-discovered resources, and project mapping edits change only Studio names or `$path` values defined in project files. These paths check for generated path, sibling mapping, selected source path, or source existence conflicts.
 
 Rojo Explorer does not automatically edit project mappings, build, serve, or sync resources.
 

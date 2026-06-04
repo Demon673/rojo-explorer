@@ -1,6 +1,9 @@
+import * as path from "node:path";
+
 import * as vscode from "vscode";
 
 import { ExplorerNode, RojoExplorerProvider } from "./rojoExplorerProvider";
+import { planProjectMappingPathEdit, ProjectMappingPathEditFailureReason } from "./projectMappingPathEdit";
 import { planProjectMappingRename, ProjectMappingRenameFailureReason } from "./projectMappingRename";
 import { createRenameInputOptions } from "./renameInputOptions";
 import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
@@ -96,7 +99,7 @@ export function activate(context: vscode.ExtensionContext): void {
       deleteResource(provider, fileSystem, node),
     ),
     vscode.commands.registerCommand("rojoExplorer.editProjectMapping", (node?: ExplorerNode) =>
-      editProjectMapping(provider, node),
+      editProjectMapping(provider, fileSystem, node),
     ),
   );
 }
@@ -310,7 +313,11 @@ async function deleteResource(
   void vscode.window.showInformationMessage(vscode.l10n.t("Deleted {0}", result.plan.currentResourceName));
 }
 
-async function editProjectMapping(provider: RojoExplorerProvider, node: ExplorerNode | undefined): Promise<void> {
+async function editProjectMapping(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+): Promise<void> {
   const projectMappingUri = provider.getProjectMappingUri(node);
   if (!projectMappingUri) {
     void vscode.window.showWarningMessage(vscode.l10n.t("Select a project-controlled resource first."));
@@ -320,6 +327,9 @@ async function editProjectMapping(provider: RojoExplorerProvider, node: Explorer
   const actions = [
     ...(provider.canRenameProjectMapping(node)
       ? [{ label: vscode.l10n.t("Rename Studio Name"), action: "renameStudioName" as const }]
+      : []),
+    ...(provider.canEditProjectMappingPath(node)
+      ? [{ label: vscode.l10n.t("Change Source Path"), action: "changeSourcePath" as const }]
       : []),
     { label: vscode.l10n.t("Open Project File"), action: "openProjectFile" as const },
   ];
@@ -336,7 +346,71 @@ async function editProjectMapping(provider: RojoExplorerProvider, node: Explorer
     return;
   }
 
+  if (selected.action === "changeSourcePath") {
+    await changeProjectMappingPath(provider, fileSystem, node, projectMappingUri);
+    return;
+  }
+
   await renameProjectMapping(provider, node, projectMappingUri);
+}
+
+async function changeProjectMappingPath(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+  projectMappingUri: vscode.Uri,
+): Promise<void> {
+  const currentName = node?.instance?.name;
+  const projectTreePath = node?.instance?.projectTreePath;
+  if (!currentName || !projectTreePath || !provider.canEditProjectMappingPath(node)) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("This project mapping source path cannot be changed safely yet."));
+    return;
+  }
+
+  const selectedUris = await vscode.window.showOpenDialog({
+    canSelectFiles: true,
+    canSelectFolders: true,
+    canSelectMany: false,
+    defaultUri: getProjectMappingPathDefaultUri(node, projectMappingUri),
+    openLabel: vscode.l10n.t("Use Source Path"),
+    title: vscode.l10n.t("Select new source path"),
+  });
+
+  const selectedUri = selectedUris?.[0];
+  if (!selectedUri) {
+    return;
+  }
+
+  const projectContent = Buffer.from(await vscode.workspace.fs.readFile(projectMappingUri)).toString("utf8");
+  const result = await planProjectMappingPathEdit(
+    projectContent,
+    {
+      projectFilePath: projectMappingUri.fsPath,
+      projectTreePath,
+      newSourcePath: selectedUri.fsPath,
+    },
+    fileSystem,
+  );
+
+  if (!result.ok) {
+    void vscode.window.showWarningMessage(localizeProjectMappingPathEditFailure(result.reason, result.targetPath));
+    return;
+  }
+
+  await vscode.workspace.fs.writeFile(projectMappingUri, Buffer.from(result.plan.updatedContent, "utf8"));
+  provider.refresh();
+  void vscode.window.showInformationMessage(
+    vscode.l10n.t("Changed source path for {0} to {1}", result.plan.mappingName, result.plan.pathValue),
+  );
+}
+
+function getProjectMappingPathDefaultUri(node: ExplorerNode | undefined, projectMappingUri: vscode.Uri): vscode.Uri {
+  const source = node?.instance?.source;
+  if (node?.resourceUri && source?.exists) {
+    return node.resourceUri;
+  }
+
+  return vscode.Uri.file(path.dirname(projectMappingUri.fsPath));
 }
 
 async function renameProjectMapping(
@@ -538,6 +612,30 @@ function localizeProjectMappingRenameFailure(reason: ProjectMappingRenameFailure
       return vscode.l10n.t("A project mapping with that name already exists.");
     case "unchangedName":
       return vscode.l10n.t("Project mapping name is unchanged.");
+  }
+}
+
+function localizeProjectMappingPathEditFailure(
+  reason: ProjectMappingPathEditFailureReason,
+  targetPath: string | undefined,
+): string {
+  switch (reason) {
+    case "invalidJson":
+      return vscode.l10n.t("Project file contains invalid JSON.");
+    case "mappingNotFound":
+      return vscode.l10n.t("Project mapping was not found in the project file.");
+    case "mappingHasNoPath":
+      return vscode.l10n.t("Project mapping is missing a $path value.");
+    case "targetNotFound":
+      return targetPath
+        ? vscode.l10n.t("Selected source path does not exist: {0}", targetPath)
+        : vscode.l10n.t("Selected source path does not exist.");
+    case "unsupportedPathType":
+      return targetPath
+        ? vscode.l10n.t("Selected source file is not a supported Rojo resource: {0}", targetPath)
+        : vscode.l10n.t("Selected source file is not a supported Rojo resource.");
+    case "unchangedPath":
+      return vscode.l10n.t("Project mapping source path is unchanged.");
   }
 }
 

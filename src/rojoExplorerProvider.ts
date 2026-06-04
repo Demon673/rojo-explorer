@@ -117,6 +117,12 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     return Boolean(node?.instance?.projectFilePath && node.instance.projectTreePath && node.instance.projectTreePath.length > 0);
   }
 
+  canEditProjectMappingPath(node?: ExplorerNode): boolean {
+    const instance = node?.instance;
+    const source = instance?.source;
+    return Boolean(node?.kind === "instance" && instance?.projectFilePath && instance.projectTreePath && source?.kind === "projectTree");
+  }
+
   getProjectMappingUri(node?: ExplorerNode): vscode.Uri | undefined {
     const source = node?.instance?.source;
     const projectFilePath = getProjectMappingFilePath(source?.kind, source?.fsPath, node?.instance?.projectFilePath ?? node?.projectUri?.fsPath);

@@ -2,6 +2,12 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.6.0 - Unreleased
+
+- Add a project mapping source path edit action that updates `$path` values in `.project.json`.
+- Validate selected source paths before writing project mapping changes.
+- Keep `$path` edits separate from filesystem move operations.
+
 ## 0.5.0 - Unreleased
 
 - Add a safe move command for filesystem-discovered Rojo resources.
