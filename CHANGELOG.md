@@ -2,6 +2,13 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.5.0 - Unreleased
+
+- Add a safe move command for filesystem-discovered Rojo resources.
+- Move sibling `.meta.json` files with the resource to avoid orphan meta diagnostics.
+- Reject target folders that already contain the same Rojo resource name, including different filesystem forms.
+- Keep project-controlled resources out of filesystem move operations.
+
 ## 0.4.0 - Unreleased
 
 - Add a safe delete command for filesystem-discovered Rojo resources.

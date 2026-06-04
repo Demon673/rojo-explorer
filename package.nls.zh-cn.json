@@ -14,6 +14,7 @@
   "rojoExplorer.commands.createLocalScript.title": "新建 LocalScript",
   "rojoExplorer.commands.createModuleScript.title": "新建 ModuleScript",
   "rojoExplorer.commands.renameResource.title": "重命名资源",
+  "rojoExplorer.commands.moveResource.title": "移动资源...",
   "rojoExplorer.commands.deleteResource.title": "删除资源",
   "rojoExplorer.commands.editProjectMapping.title": "编辑项目映射...",
   "rojoExplorer.views.explorer.name": "Rojo 资源管理器"

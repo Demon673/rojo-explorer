@@ -16,6 +16,7 @@ import {
   ProjectControlBadge,
 } from "./projectControlledResources";
 import { canDeleteSourceKind } from "./resourceDeletion";
+import { canMoveSourceKind } from "./resourceMove";
 import { canRenameSourceKind } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 import { findRojoProjectFiles } from "./vscodeRojoProjects";
@@ -99,6 +100,15 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     return canDeleteSourceKind(source.kind);
   }
 
+  canMoveResource(node?: ExplorerNode): boolean {
+    const source = node?.instance?.source;
+    if (node?.kind !== "instance" || !node.resourceUri || !source?.exists || !source.entryType) {
+      return false;
+    }
+
+    return canMoveSourceKind(source.kind);
+  }
+
   canEditProjectMapping(node?: ExplorerNode): boolean {
     return this.getProjectMappingUri(node) !== undefined;
   }
@@ -111,6 +121,27 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     const source = node?.instance?.source;
     const projectFilePath = getProjectMappingFilePath(source?.kind, source?.fsPath, node?.instance?.projectFilePath ?? node?.projectUri?.fsPath);
     return projectFilePath ? vscode.Uri.file(projectFilePath) : undefined;
+  }
+
+  async getFilesystemFolderNodes(): Promise<ExplorerNode[]> {
+    const roots = await this.getChildren();
+    const folders: ExplorerNode[] = [];
+
+    const visit = (node: ExplorerNode) => {
+      if (this.canCreateChildren(node)) {
+        folders.push(node);
+      }
+
+      for (const child of node.children ?? []) {
+        visit(child);
+      }
+    };
+
+    for (const root of roots) {
+      visit(root);
+    }
+
+    return folders;
   }
 
   private scheduleRefresh(): void {
@@ -135,6 +166,9 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     }
     if (this.canRenameResource(node)) {
       item.contextValue += ".renameable";
+    }
+    if (this.canMoveResource(node)) {
+      item.contextValue += ".movable";
     }
     if (this.canDeleteResource(node)) {
       item.contextValue += ".deletable";

@@ -43,6 +43,7 @@
     "onCommand:rojoExplorer.createLocalScript",
     "onCommand:rojoExplorer.createModuleScript",
     "onCommand:rojoExplorer.renameResource",
+    "onCommand:rojoExplorer.moveResource",
     "onCommand:rojoExplorer.deleteResource",
     "onCommand:rojoExplorer.editProjectMapping",
     "workspaceContains:**/*.project.json"
@@ -115,6 +116,11 @@
         "icon": "$(edit)"
       },
       {
+        "command": "rojoExplorer.moveResource",
+        "title": "%rojoExplorer.commands.moveResource.title%",
+        "icon": "$(arrow-right)"
+      },
+      {
         "command": "rojoExplorer.deleteResource",
         "title": "%rojoExplorer.commands.deleteResource.title%",
         "icon": "$(trash)"
@@ -170,14 +176,19 @@
           "group": "resource-edit@1"
         },
         {
+          "command": "rojoExplorer.moveResource",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /movable/",
+          "group": "resource-edit@2"
+        },
+        {
           "command": "rojoExplorer.editProjectMapping",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /projectControlled/",
-          "group": "resource-edit@2"
+          "group": "resource-edit@3"
         },
         {
           "command": "rojoExplorer.deleteResource",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /deletable/",
-          "group": "resource-edit@3"
+          "group": "resource-edit@4"
         },
         {
           "command": "rojoExplorer.createFolder",

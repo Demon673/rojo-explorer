@@ -5,6 +5,7 @@ import { planProjectMappingRename, ProjectMappingRenameFailureReason } from "./p
 import { createRenameInputOptions } from "./renameInputOptions";
 import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
 import { planResourceDeletion, ResourceDeletionFailureReason } from "./resourceDeletion";
+import { planResourceMove, ResourceMoveFailureReason } from "./resourceMove";
 import { planResourceRename, ResourceRenameFailureReason } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 
@@ -87,6 +88,9 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand("rojoExplorer.renameResource", (node?: ExplorerNode) =>
       renameResource(provider, fileSystem, node),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.moveResource", (node?: ExplorerNode) =>
+      moveResource(provider, fileSystem, node),
     ),
     vscode.commands.registerCommand("rojoExplorer.deleteResource", (node?: ExplorerNode) =>
       deleteResource(provider, fileSystem, node),
@@ -175,6 +179,84 @@ async function createResource(
 
   if (result.plan.entryType === "file") {
     await openTextDocument(targetUri);
+  }
+}
+
+async function moveResource(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+): Promise<void> {
+  const source = node?.instance?.source;
+  if (!provider.canMoveResource(node) || !node?.instance || !source?.entryType) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("This resource cannot be moved safely yet."));
+    return;
+  }
+
+  const targetFolders = await provider.getFilesystemFolderNodes();
+  const picks = targetFolders
+    .filter((folder) => folder.resourceUri)
+    .map((folder) => ({
+      label: folder.studioPath ?? folder.label,
+      description: vscode.workspace.asRelativePath(folder.resourceUri!),
+      folder,
+    }));
+
+  if (picks.length === 0) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("No filesystem-backed folder is available as a move target."));
+    return;
+  }
+
+  const selected = await vscode.window.showQuickPick(picks, {
+    placeHolder: vscode.l10n.t("Select target folder"),
+  });
+  if (!selected?.folder.resourceUri) {
+    return;
+  }
+
+  const result = await planResourceMove(
+    {
+      sourcePath: source.fsPath,
+      sourceKind: source.kind,
+      entryType: source.entryType,
+      currentResourceName: node.instance.name,
+      targetDirectoryPath: selected.folder.resourceUri.fsPath,
+    },
+    fileSystem,
+  );
+
+  if (!result.ok) {
+    void vscode.window.showWarningMessage(localizeMoveFailure(result.reason, result.targetPath));
+    return;
+  }
+
+  const moveAction = vscode.l10n.t("Move");
+  const confirmation = await vscode.window.showWarningMessage(
+    vscode.l10n.t("Move {0} to {1}?", result.plan.currentResourceName, selected.label),
+    {
+      modal: true,
+      detail: result.plan.moves.map((move) => `${move.sourcePath} -> ${move.targetPath}`).join("\n"),
+    },
+    moveAction,
+  );
+  if (confirmation !== moveAction) {
+    return;
+  }
+
+  for (const move of result.plan.moves) {
+    await vscode.workspace.fs.rename(vscode.Uri.file(move.sourcePath), vscode.Uri.file(move.targetPath), {
+      overwrite: false,
+    });
+  }
+
+  provider.refresh();
+  void vscode.window.showInformationMessage(
+    vscode.l10n.t("Moved {0} to {1}", result.plan.currentResourceName, selected.label),
+  );
+
+  const primaryMove = result.plan.moves.find((move) => move.role === "resource");
+  if (primaryMove?.entryType === "file") {
+    await openTextDocument(vscode.Uri.file(primaryMove.targetPath));
   }
 }
 
@@ -397,6 +479,29 @@ function localizeDeletionFailure(reason: ResourceDeletionFailureReason, targetPa
         : vscode.l10n.t("Source path does not exist.");
     case "unsupportedResource":
       return vscode.l10n.t("This resource cannot be deleted safely yet.");
+  }
+}
+
+function localizeMoveFailure(reason: ResourceMoveFailureReason, targetPath: string | undefined): string {
+  switch (reason) {
+    case "sourceNotFound":
+      return targetPath
+        ? vscode.l10n.t("Source path does not exist: {0}", targetPath)
+        : vscode.l10n.t("Source path does not exist.");
+    case "targetNotDirectory":
+      return targetPath
+        ? vscode.l10n.t("Target path is not a directory: {0}", targetPath)
+        : vscode.l10n.t("Target path is not a directory.");
+    case "targetExists":
+      return targetPath
+        ? vscode.l10n.t("A resource with that Rojo name already exists in the target folder: {0}", targetPath)
+        : vscode.l10n.t("A resource with that Rojo name already exists in the target folder.");
+    case "targetInsideSource":
+      return vscode.l10n.t("A resource cannot be moved inside itself.");
+    case "unchangedTarget":
+      return vscode.l10n.t("Resource is already in that folder.");
+    case "unsupportedResource":
+      return vscode.l10n.t("This resource cannot be moved safely yet.");
   }
 }
 
