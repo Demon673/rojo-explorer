@@ -17,6 +17,7 @@ import {
 } from "./projectControlledResources";
 import { canDeleteSourceKind } from "./resourceDeletion";
 import { canDuplicateSourceKind } from "./resourceDuplicate";
+import { getResourceChildContainerPath } from "./resourceChildContainer";
 import { canEditInitMetaSourceKind } from "./resourceInitMeta";
 import { canRemoveInitScriptSourceKind } from "./resourceInitScript";
 import { canEditMetaSourceKind } from "./resourceMeta";
@@ -77,7 +78,7 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
   }
 
   canCreateChildren(node?: ExplorerNode): boolean {
-    return node?.kind === "instance" && node.instance?.source?.entryType === "directory" && Boolean(node.resourceUri);
+    return node?.kind === "instance" && Boolean(node.resourceUri) && Boolean(this.getChildContainerUri(node));
   }
 
   canCreateInitScript(node?: ExplorerNode): boolean {
@@ -173,6 +174,11 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     const source = node?.instance?.source;
     const projectFilePath = getProjectMappingFilePath(source?.kind, source?.fsPath, node?.instance?.projectFilePath ?? node?.projectUri?.fsPath);
     return projectFilePath ? vscode.Uri.file(projectFilePath) : undefined;
+  }
+
+  getChildContainerUri(node?: ExplorerNode): vscode.Uri | undefined {
+    const childContainerPath = getResourceChildContainerPath(node?.instance?.source);
+    return childContainerPath ? vscode.Uri.file(childContainerPath) : undefined;
   }
 
   async getFilesystemFolderNodes(): Promise<ExplorerNode[]> {

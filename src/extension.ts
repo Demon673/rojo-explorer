@@ -204,7 +204,7 @@ async function createInstance(
   fileSystem: VscodeRojoFileSystem,
   node: ExplorerNode | undefined,
 ): Promise<void> {
-  if (!provider.canCreateChildren(node) || !node?.resourceUri) {
+  if (!provider.canCreateChildren(node) || !provider.getChildContainerUri(node)) {
     void vscode.window.showWarningMessage(vscode.l10n.t("Select a filesystem-backed folder resource first."));
     return;
   }
@@ -353,7 +353,8 @@ async function createResource(
   node: ExplorerNode | undefined,
   kind: CreatableResourceKind,
 ): Promise<void> {
-  if (!provider.canCreateChildren(node) || !node?.resourceUri) {
+  const parentDirectoryUri = provider.getChildContainerUri(node);
+  if (!provider.canCreateChildren(node) || !parentDirectoryUri) {
     void vscode.window.showWarningMessage(vscode.l10n.t("Select a filesystem-backed folder resource first."));
     return;
   }
@@ -381,7 +382,7 @@ async function createResource(
 
   const result = await planResourceCreation(
     {
-      parentDirectoryPath: node.resourceUri.fsPath,
+      parentDirectoryPath: parentDirectoryUri.fsPath,
       resourceName,
       kind,
     },
@@ -552,12 +553,16 @@ async function moveResource(
 
   const targetFolders = await provider.getFilesystemFolderNodes();
   const picks = targetFolders
-    .filter((folder) => folder.resourceUri)
-    .map((folder) => ({
-      label: folder.studioPath ?? folder.label,
-      description: vscode.workspace.asRelativePath(folder.resourceUri!),
-      folder,
-    }));
+    .flatMap((folder) => {
+      const childContainerUri = provider.getChildContainerUri(folder);
+      return childContainerUri
+        ? [{
+            label: folder.studioPath ?? folder.label,
+            description: vscode.workspace.asRelativePath(childContainerUri),
+            folder,
+          }]
+        : [];
+    });
 
   if (picks.length === 0) {
     void vscode.window.showWarningMessage(vscode.l10n.t("No filesystem-backed folder is available as a move target."));
@@ -567,7 +572,7 @@ async function moveResource(
   const selected = await vscode.window.showQuickPick(picks, {
     placeHolder: vscode.l10n.t("Select target folder"),
   });
-  if (!selected?.folder.resourceUri) {
+  if (!selected?.folder) {
     return;
   }
 
@@ -591,7 +596,8 @@ async function moveResourcesToFolder(
   targetFolder: ExplorerNode,
   options: MoveResourcesToFolderOptions = {},
 ): Promise<void> {
-  if (!provider.canCreateChildren(targetFolder) || !targetFolder.resourceUri) {
+  const targetDirectoryUri = provider.getChildContainerUri(targetFolder);
+  if (!provider.canCreateChildren(targetFolder) || !targetDirectoryUri) {
     void vscode.window.showWarningMessage(vscode.l10n.t("Drop resources onto a filesystem-backed folder resource."));
     return;
   }
@@ -610,7 +616,7 @@ async function moveResourcesToFolder(
         sourceKind: source.kind,
         entryType: source.entryType,
         currentResourceName: sourceNode.instance.name,
-        targetDirectoryPath: targetFolder.resourceUri.fsPath,
+        targetDirectoryPath: targetDirectoryUri.fsPath,
       },
       fileSystem,
     );

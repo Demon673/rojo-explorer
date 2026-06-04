@@ -24,6 +24,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Creates new Rojo-backed folders, scripts, local scripts, module scripts, JSON/TOML modules, models, remote events/functions, bindable events/functions, string values, and localization tables under filesystem-backed folder resources.
 - Creates init scripts for filesystem-discovered Folder resources, allowing a Rojo directory to become a Script, LocalScript, or ModuleScript while keeping children.
 - Removes init scripts from init-backed filesystem resources without deleting the containing directory or child resources.
+- Creates and moves child resources under init-backed Script, LocalScript, and ModuleScript resources by targeting the containing Rojo directory.
 - Provides a `New Instance...` picker for supported directory-backed class resources that are represented through `init.meta.json`.
 - Renames Rojo-backed filesystem resources while preserving file suffix semantics and sibling `.meta.json` files.
 - Duplicates Rojo-backed filesystem resources while preserving file suffix semantics and sibling `.meta.json` files.

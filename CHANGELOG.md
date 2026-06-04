@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.26.0 - Unreleased
+
+- Allow init-backed Script, LocalScript, and ModuleScript resources to accept child creation and move/drop targets.
+- Use the containing Rojo directory as the child container for init-backed resources instead of the `init.*.lua` file path.
+
 ## 0.25.0 - Unreleased
 
 - Add a `Remove Init Script...` command for init-backed filesystem resources.
