@@ -67,6 +67,10 @@ const fileBackedResourceDefinitions = {
   },
 } satisfies Record<FileBackedResourceKind, FileResourceDefinition>;
 
+export function getMetaBackedDirectoryResourceKinds(): MetaBackedDirectoryResourceKind[] {
+  return Object.keys(metaBackedDirectoryResourceClassNames) as MetaBackedDirectoryResourceKind[];
+}
+
 export interface ResourceCreationRequest {
   parentDirectoryPath: string;
   resourceName: string;

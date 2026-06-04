@@ -30,6 +30,7 @@
   "warning": "warning",
   "info": "info",
   "Select a filesystem-backed folder resource first.": "Select a filesystem-backed folder resource first.",
+  "Select instance class": "Select instance class",
   "Enter {0} name": "Enter {0} name",
   "Resource name": "Resource name",
   "Resource name is required.": "Resource name is required.",

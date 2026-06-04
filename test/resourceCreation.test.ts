@@ -1,7 +1,11 @@
 import * as path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { planResourceCreation, type MetaBackedDirectoryResourceKind } from "../src/resourceCreation";
+import {
+  getMetaBackedDirectoryResourceKinds,
+  planResourceCreation,
+  type MetaBackedDirectoryResourceKind,
+} from "../src/resourceCreation";
 
 describe("resource creation planning", () => {
   it("creates folders as directories", async () => {
@@ -70,6 +74,16 @@ describe("resource creation planning", () => {
         },
       });
     }
+  });
+
+  it("lists supported meta-backed directory resources for generic instance creation", () => {
+    expect(getMetaBackedDirectoryResourceKinds()).toEqual([
+      "Model",
+      "RemoteEvent",
+      "RemoteFunction",
+      "BindableEvent",
+      "BindableFunction",
+    ]);
   });
 
   it("creates StringValues as text files", async () => {

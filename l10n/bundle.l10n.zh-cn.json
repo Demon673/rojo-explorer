@@ -30,6 +30,7 @@
   "warning": "警告",
   "info": "信息",
   "Select a filesystem-backed folder resource first.": "请先选择一个由文件系统目录支持的资源。",
+  "Select instance class": "选择实例类",
   "Enter {0} name": "输入 {0} 名称",
   "Resource name": "资源名称",
   "Resource name is required.": "资源名称不能为空。",

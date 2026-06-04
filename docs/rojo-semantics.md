@@ -50,6 +50,7 @@ Rojo Explorer builds a Studio-style resource tree from `*.project.json` files an
 - Filesystem-backed BindableEvent creation creates a directory plus `init.meta.json` with `className` set to `BindableEvent`; it does not generate binary Roblox assets.
 - Filesystem-backed BindableFunction creation creates a directory plus `init.meta.json` with `className` set to `BindableFunction`; it does not generate binary Roblox assets.
 - Supported meta-backed directory creation commands share one planner path so every supported class creates the same directory plus `init.meta.json` structure.
+- Generic `New Instance...` creation is limited to the same supported meta-backed directory classes; v1 does not accept arbitrary className input.
 - Filesystem-backed JSON Module creation creates a plain `.json` file with `{}` content; it does not create `.model.json` or `.project.json` files.
 - Filesystem-backed TOML Module creation creates a plain `.toml` file, matching Rojo's TOML module sync rule.
 - Filesystem-backed StringValue creation creates a `.txt` file, matching Rojo's plain text sync rule.

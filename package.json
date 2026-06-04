@@ -43,6 +43,7 @@
     "onCommand:rojoExplorer.createScript",
     "onCommand:rojoExplorer.createLocalScript",
     "onCommand:rojoExplorer.createModuleScript",
+    "onCommand:rojoExplorer.createInstance",
     "onCommand:rojoExplorer.createModel",
     "onCommand:rojoExplorer.createRemoteEvent",
     "onCommand:rojoExplorer.createRemoteFunction",
@@ -127,6 +128,11 @@
         "command": "rojoExplorer.createModuleScript",
         "title": "%rojoExplorer.commands.createModuleScript.title%",
         "icon": "$(symbol-module)"
+      },
+      {
+        "command": "rojoExplorer.createInstance",
+        "title": "%rojoExplorer.commands.createInstance.title%",
+        "icon": "$(add)"
       },
       {
         "command": "rojoExplorer.createModel",
@@ -309,49 +315,54 @@
           "group": "resource-create@4"
         },
         {
-          "command": "rojoExplorer.createModel",
+          "command": "rojoExplorer.createInstance",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@5"
         },
         {
-          "command": "rojoExplorer.createRemoteEvent",
+          "command": "rojoExplorer.createModel",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@6"
         },
         {
-          "command": "rojoExplorer.createRemoteFunction",
+          "command": "rojoExplorer.createRemoteEvent",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@7"
         },
         {
-          "command": "rojoExplorer.createBindableEvent",
+          "command": "rojoExplorer.createRemoteFunction",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@8"
         },
         {
-          "command": "rojoExplorer.createBindableFunction",
+          "command": "rojoExplorer.createBindableEvent",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@9"
         },
         {
-          "command": "rojoExplorer.createStringValue",
+          "command": "rojoExplorer.createBindableFunction",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@10"
         },
         {
-          "command": "rojoExplorer.createLocalizationTable",
+          "command": "rojoExplorer.createStringValue",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@11"
         },
         {
-          "command": "rojoExplorer.createJsonModule",
+          "command": "rojoExplorer.createLocalizationTable",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@12"
         },
         {
-          "command": "rojoExplorer.createTomlModule",
+          "command": "rojoExplorer.createJsonModule",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@13"
+        },
+        {
+          "command": "rojoExplorer.createTomlModule",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@14"
         }
       ]
     },

@@ -7,7 +7,12 @@ import { RojoExplorerDragAndDropController } from "./rojoExplorerDragAndDrop";
 import { planProjectMappingPathEdit, ProjectMappingPathEditFailureReason } from "./projectMappingPathEdit";
 import { planProjectMappingRename, ProjectMappingRenameFailureReason } from "./projectMappingRename";
 import { createRenameInputOptions } from "./renameInputOptions";
-import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
+import {
+  CreatableResourceKind,
+  getMetaBackedDirectoryResourceKinds,
+  planResourceCreation,
+  type MetaBackedDirectoryResourceKind,
+} from "./resourceCreation";
 import { planResourceDeletion, ResourceDeletionFailureReason } from "./resourceDeletion";
 import { planResourceDuplicate, ResourceDuplicateFailureReason } from "./resourceDuplicate";
 import { planResourceInitMeta, ResourceInitMetaFailureReason } from "./resourceInitMeta";
@@ -106,6 +111,9 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.createModuleScript", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "ModuleScript"),
     ),
+    vscode.commands.registerCommand("rojoExplorer.createInstance", (node?: ExplorerNode) =>
+      createInstance(provider, fileSystem, node),
+    ),
     vscode.commands.registerCommand("rojoExplorer.createModel", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "Model"),
     ),
@@ -175,6 +183,41 @@ async function openTextDocument(uri: vscode.Uri): Promise<void> {
 
   const document = await vscode.workspace.openTextDocument(uri);
   await vscode.window.showTextDocument(document, { preview: false });
+}
+
+async function createInstance(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+): Promise<void> {
+  if (!provider.canCreateChildren(node) || !node?.resourceUri) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("Select a filesystem-backed folder resource first."));
+    return;
+  }
+
+  const selectedKind = await pickMetaBackedDirectoryResourceKind();
+  if (!selectedKind) {
+    return;
+  }
+
+  await createResource(provider, fileSystem, node, selectedKind);
+}
+
+async function pickMetaBackedDirectoryResourceKind(): Promise<MetaBackedDirectoryResourceKind | undefined> {
+  const picks: MetaBackedDirectoryResourcePick[] = getMetaBackedDirectoryResourceKinds().map((resourceKind) => ({
+    label: localizeResourceKind(resourceKind),
+    description: resourceKind,
+    resourceKind,
+  }));
+  const selected = await vscode.window.showQuickPick<MetaBackedDirectoryResourcePick>(picks, {
+    placeHolder: vscode.l10n.t("Select instance class"),
+  });
+
+  return selected?.resourceKind;
+}
+
+interface MetaBackedDirectoryResourcePick extends vscode.QuickPickItem {
+  resourceKind: MetaBackedDirectoryResourceKind;
 }
 
 async function createResource(

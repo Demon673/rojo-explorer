@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.23.0 - Unreleased
+
+- Add a `New Instance...` picker for supported meta-backed directory resources.
+- Reuse the existing safe Rojo metadata creation path and conflict checks for generic instance creation.
+
 ## 0.22.0 - Unreleased
 
 - Centralize meta-backed directory resource creation through one className definition registry.
