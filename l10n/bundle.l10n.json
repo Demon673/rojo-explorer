@@ -36,5 +36,10 @@
   "Resource names cannot be empty or contain path separators.": "Resource names cannot be empty or contain path separators.",
   "Resources can only be created under filesystem-backed directories.": "Resources can only be created under filesystem-backed directories.",
   "A resource with that Rojo name already exists: {0}": "A resource with that Rojo name already exists: {0}",
-  "A resource with that Rojo name already exists.": "A resource with that Rojo name already exists."
+  "A resource with that Rojo name already exists.": "A resource with that Rojo name already exists.",
+  "This resource cannot be renamed safely yet.": "This resource cannot be renamed safely yet.",
+  "Rename {0}": "Rename {0}",
+  "Renamed {0} to {1}": "Renamed {0} to {1}",
+  "Source path does not exist.": "Source path does not exist.",
+  "Resource name is unchanged.": "Resource name is unchanged."
 }

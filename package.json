@@ -41,6 +41,7 @@
     "onCommand:rojoExplorer.createScript",
     "onCommand:rojoExplorer.createLocalScript",
     "onCommand:rojoExplorer.createModuleScript",
+    "onCommand:rojoExplorer.renameResource",
     "workspaceContains:**/*.project.json"
   ],
   "main": "./out/extension.js",
@@ -100,6 +101,11 @@
         "command": "rojoExplorer.createModuleScript",
         "title": "%rojoExplorer.commands.createModuleScript.title%",
         "icon": "$(symbol-module)"
+      },
+      {
+        "command": "rojoExplorer.renameResource",
+        "title": "%rojoExplorer.commands.renameResource.title%",
+        "icon": "$(edit)"
       }
     ],
     "menus": {
@@ -140,6 +146,11 @@
           "command": "rojoExplorer.copySourcePath",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /resource/",
           "group": "navigation"
+        },
+        {
+          "command": "rojoExplorer.renameResource",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /renameable/",
+          "group": "resource-edit@1"
         },
         {
           "command": "rojoExplorer.createFolder",

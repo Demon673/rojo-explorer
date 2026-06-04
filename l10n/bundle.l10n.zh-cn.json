@@ -36,5 +36,10 @@
   "Resource names cannot be empty or contain path separators.": "资源名称不能为空，也不能包含路径分隔符。",
   "Resources can only be created under filesystem-backed directories.": "只能在由文件系统目录支持的资源下创建子资源。",
   "A resource with that Rojo name already exists: {0}": "已存在同名 Rojo 资源：{0}",
-  "A resource with that Rojo name already exists.": "已存在同名 Rojo 资源。"
+  "A resource with that Rojo name already exists.": "已存在同名 Rojo 资源。",
+  "This resource cannot be renamed safely yet.": "暂时不能安全重命名此资源。",
+  "Rename {0}": "重命名 {0}",
+  "Renamed {0} to {1}": "已将 {0} 重命名为 {1}",
+  "Source path does not exist.": "源路径不存在。",
+  "Resource name is unchanged.": "资源名称未变化。"
 }

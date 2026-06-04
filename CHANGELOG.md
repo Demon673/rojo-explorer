@@ -2,6 +2,12 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.3.0 - Unreleased
+
+- Add a resource rename command for filesystem-discovered Rojo resources.
+- Preserve Rojo file suffixes and sibling `.meta.json` files during rename planning.
+- Keep explicit project `$path` mappings out of rename until project JSON edits are supported.
+
 ## 0.2.0 - Unreleased
 
 - Add resource creation commands for Folder, Script, LocalScript, and ModuleScript.

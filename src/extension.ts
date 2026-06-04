@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 
 import { ExplorerNode, RojoExplorerProvider } from "./rojoExplorerProvider";
 import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
+import { planResourceRename, ResourceRenameFailureReason } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -79,6 +80,9 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand("rojoExplorer.createModuleScript", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "ModuleScript"),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.renameResource", (node?: ExplorerNode) =>
+      renameResource(provider, fileSystem, node),
     ),
   );
 }
@@ -164,6 +168,74 @@ async function createResource(
   }
 }
 
+async function renameResource(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+): Promise<void> {
+  const source = node?.instance?.source;
+  if (!provider.canRenameResource(node) || !node?.instance || !source?.entryType) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("This resource cannot be renamed safely yet."));
+    return;
+  }
+
+  const currentName = node.instance.name;
+  const newName = await vscode.window.showInputBox({
+    prompt: vscode.l10n.t("Rename {0}", currentName),
+    placeHolder: vscode.l10n.t("Resource name"),
+    value: currentName,
+    valueSelection: [0, currentName.length],
+    validateInput(value) {
+      const trimmed = value.trim();
+      if (trimmed.length === 0) {
+        return vscode.l10n.t("Resource name is required.");
+      }
+
+      if (trimmed.includes("/") || trimmed.includes("\\")) {
+        return vscode.l10n.t("Resource name cannot contain path separators.");
+      }
+
+      return undefined;
+    },
+  });
+
+  if (newName === undefined) {
+    return;
+  }
+
+  const result = await planResourceRename(
+    {
+      sourcePath: source.fsPath,
+      sourceKind: source.kind,
+      entryType: source.entryType,
+      currentResourceName: currentName,
+      newResourceName: newName,
+    },
+    fileSystem,
+  );
+
+  if (!result.ok) {
+    void vscode.window.showWarningMessage(localizeRenameFailure(result.reason, result.targetPath));
+    return;
+  }
+
+  for (const move of result.plan.moves) {
+    await vscode.workspace.fs.rename(vscode.Uri.file(move.sourcePath), vscode.Uri.file(move.targetPath), {
+      overwrite: false,
+    });
+  }
+
+  provider.refresh();
+  void vscode.window.showInformationMessage(
+    vscode.l10n.t("Renamed {0} to {1}", result.plan.currentResourceName, result.plan.newResourceName),
+  );
+
+  const primaryMove = result.plan.moves.find((move) => move.role === "resource");
+  if (primaryMove?.entryType === "file") {
+    await openTextDocument(vscode.Uri.file(primaryMove.targetPath));
+  }
+}
+
 function localizeResourceKind(kind: CreatableResourceKind): string {
   switch (kind) {
     case "Folder":
@@ -187,6 +259,25 @@ function localizeCreationFailure(reason: "invalidName" | "parentNotDirectory" | 
       return targetPath
         ? vscode.l10n.t("A resource with that Rojo name already exists: {0}", targetPath)
         : vscode.l10n.t("A resource with that Rojo name already exists.");
+  }
+}
+
+function localizeRenameFailure(reason: ResourceRenameFailureReason, targetPath: string | undefined): string {
+  switch (reason) {
+    case "invalidName":
+      return vscode.l10n.t("Resource names cannot be empty or contain path separators.");
+    case "sourceNotFound":
+      return targetPath
+        ? vscode.l10n.t("Source path does not exist: {0}", targetPath)
+        : vscode.l10n.t("Source path does not exist.");
+    case "unsupportedResource":
+      return vscode.l10n.t("This resource cannot be renamed safely yet.");
+    case "targetExists":
+      return targetPath
+        ? vscode.l10n.t("A resource with that Rojo name already exists: {0}", targetPath)
+        : vscode.l10n.t("A resource with that Rojo name already exists.");
+    case "unchangedName":
+      return vscode.l10n.t("Resource name is unchanged.");
   }
 }
 

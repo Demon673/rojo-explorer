@@ -10,6 +10,7 @@ import {
   RojoProjectModel,
 } from "./domain";
 import { shouldOpenResourceOnClick } from "./explorerNodeBehavior";
+import { canRenameSourceKind } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 import { findRojoProjectFiles } from "./vscodeRojoProjects";
 
@@ -74,6 +75,15 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     return node?.kind === "instance" && node.instance?.source?.entryType === "directory" && Boolean(node.resourceUri);
   }
 
+  canRenameResource(node?: ExplorerNode): boolean {
+    const source = node?.instance?.source;
+    if (node?.kind !== "instance" || !node.resourceUri || !source?.exists || !source.entryType) {
+      return false;
+    }
+
+    return canRenameSourceKind(source.kind);
+  }
+
   private scheduleRefresh(): void {
     if (this.refreshTimer) {
       clearTimeout(this.refreshTimer);
@@ -93,6 +103,9 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     item.contextValue = `${node.kind}${node.resourceUri ? ".resource" : ""}${node.studioPath ? ".studioPath" : ""}`;
     if (this.canCreateChildren(node)) {
       item.contextValue += ".createChildren";
+    }
+    if (this.canRenameResource(node)) {
+      item.contextValue += ".renameable";
     }
     item.resourceUri = node.resourceUri;
     item.iconPath = this.getIcon(node);
