@@ -39,6 +39,7 @@
   "LocalScript": "本地脚本",
   "ModuleScript": "模块脚本",
   "Model": "模型",
+  "RemoteEvent": "远程事件",
   "StringValue": "字符串值",
   "LocalizationTable": "本地化表",
   "JSON Module": "JSON 模块",

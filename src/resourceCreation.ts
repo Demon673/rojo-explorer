@@ -9,6 +9,7 @@ export type CreatableResourceKind =
   | "LocalScript"
   | "ModuleScript"
   | "Model"
+  | "RemoteEvent"
   | "StringValue"
   | "LocalizationTable"
   | "JSONModule"
@@ -116,21 +117,10 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
         targetPath: path.join(parentDirectoryPath, resourceName),
         entryType: "directory",
       };
-    case "Model": {
-      const targetPath = path.join(parentDirectoryPath, resourceName);
-      return {
-        kind,
-        resourceName,
-        targetPath,
-        entryType: "directory",
-        additionalFiles: [
-          {
-            targetPath: path.join(targetPath, "init.meta.json"),
-            content: JSON.stringify({ className: "Model" }, null, 2) + "\n",
-          },
-        ],
-      };
-    }
+    case "Model":
+      return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "Model");
+    case "RemoteEvent":
+      return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "RemoteEvent");
     case "StringValue":
       return {
         kind,
@@ -175,7 +165,7 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
 function scriptPlan(
   parentDirectoryPath: string,
   resourceName: string,
-  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
+  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "RemoteEvent" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
   suffix: string,
 ): ResourceCreationPlan {
   return {
@@ -188,13 +178,34 @@ function scriptPlan(
 }
 
 function defaultScriptContent(
-  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
+  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "RemoteEvent" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
 ): string {
   if (kind === "ModuleScript") {
     return "return {}\n";
   }
 
   return "\n";
+}
+
+function metaBackedDirectoryPlan(
+  parentDirectoryPath: string,
+  resourceName: string,
+  kind: Extract<CreatableResourceKind, "Model" | "RemoteEvent">,
+  className: string,
+): ResourceCreationPlan {
+  const targetPath = path.join(parentDirectoryPath, resourceName);
+  return {
+    kind,
+    resourceName,
+    targetPath,
+    entryType: "directory",
+    additionalFiles: [
+      {
+        targetPath: path.join(targetPath, "init.meta.json"),
+        content: JSON.stringify({ className }, null, 2) + "\n",
+      },
+    ],
+  };
 }
 
 function isValidResourceName(name: string): boolean {

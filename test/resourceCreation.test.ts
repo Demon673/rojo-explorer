@@ -58,6 +58,33 @@ describe("resource creation planning", () => {
     });
   });
 
+  it("creates RemoteEvents as directories with init.meta.json className", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "RoundStarted",
+        kind: "RemoteEvent",
+      },
+      fsWithExistingDirectories([root]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        kind: "RemoteEvent",
+        resourceName: "RoundStarted",
+        targetPath: path.join(root, "RoundStarted"),
+        entryType: "directory",
+        additionalFiles: [
+          {
+            targetPath: path.join(root, "RoundStarted", "init.meta.json"),
+            content: "{\n  \"className\": \"RemoteEvent\"\n}\n",
+          },
+        ],
+      },
+    });
+  });
+
   it("creates StringValues as text files", async () => {
     const result = await planResourceCreation(
       {

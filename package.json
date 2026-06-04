@@ -44,6 +44,7 @@
     "onCommand:rojoExplorer.createLocalScript",
     "onCommand:rojoExplorer.createModuleScript",
     "onCommand:rojoExplorer.createModel",
+    "onCommand:rojoExplorer.createRemoteEvent",
     "onCommand:rojoExplorer.createStringValue",
     "onCommand:rojoExplorer.createLocalizationTable",
     "onCommand:rojoExplorer.createJsonModule",
@@ -128,6 +129,11 @@
         "command": "rojoExplorer.createModel",
         "title": "%rojoExplorer.commands.createModel.title%",
         "icon": "$(symbol-structure)"
+      },
+      {
+        "command": "rojoExplorer.createRemoteEvent",
+        "title": "%rojoExplorer.commands.createRemoteEvent.title%",
+        "icon": "$(symbol-event)"
       },
       {
         "command": "rojoExplorer.createStringValue",
@@ -290,24 +296,29 @@
           "group": "resource-create@5"
         },
         {
-          "command": "rojoExplorer.createStringValue",
+          "command": "rojoExplorer.createRemoteEvent",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@6"
         },
         {
-          "command": "rojoExplorer.createLocalizationTable",
+          "command": "rojoExplorer.createStringValue",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@7"
         },
         {
-          "command": "rojoExplorer.createJsonModule",
+          "command": "rojoExplorer.createLocalizationTable",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@8"
         },
         {
-          "command": "rojoExplorer.createTomlModule",
+          "command": "rojoExplorer.createJsonModule",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@9"
+        },
+        {
+          "command": "rojoExplorer.createTomlModule",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@10"
         }
       ]
     },

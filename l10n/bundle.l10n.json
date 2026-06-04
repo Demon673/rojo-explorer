@@ -39,6 +39,7 @@
   "LocalScript": "LocalScript",
   "ModuleScript": "ModuleScript",
   "Model": "Model",
+  "RemoteEvent": "RemoteEvent",
   "StringValue": "StringValue",
   "LocalizationTable": "LocalizationTable",
   "JSON Module": "JSON Module",

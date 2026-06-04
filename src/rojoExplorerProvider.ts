@@ -582,6 +582,8 @@ function iconForClassName(className: string): vscode.ThemeIcon {
       return new vscode.ThemeIcon("folder");
     case "Model":
       return new vscode.ThemeIcon("symbol-structure");
+    case "RemoteEvent":
+      return new vscode.ThemeIcon("symbol-event");
     case "StringValue":
       return new vscode.ThemeIcon("symbol-string");
     case "LocalizationTable":
