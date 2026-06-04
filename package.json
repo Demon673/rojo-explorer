@@ -47,6 +47,7 @@
     "onCommand:rojoExplorer.createRemoteEvent",
     "onCommand:rojoExplorer.createRemoteFunction",
     "onCommand:rojoExplorer.createBindableEvent",
+    "onCommand:rojoExplorer.createBindableFunction",
     "onCommand:rojoExplorer.createStringValue",
     "onCommand:rojoExplorer.createLocalizationTable",
     "onCommand:rojoExplorer.createJsonModule",
@@ -146,6 +147,11 @@
         "command": "rojoExplorer.createBindableEvent",
         "title": "%rojoExplorer.commands.createBindableEvent.title%",
         "icon": "$(symbol-event)"
+      },
+      {
+        "command": "rojoExplorer.createBindableFunction",
+        "title": "%rojoExplorer.commands.createBindableFunction.title%",
+        "icon": "$(symbol-method)"
       },
       {
         "command": "rojoExplorer.createStringValue",
@@ -323,24 +329,29 @@
           "group": "resource-create@8"
         },
         {
-          "command": "rojoExplorer.createStringValue",
+          "command": "rojoExplorer.createBindableFunction",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@9"
         },
         {
-          "command": "rojoExplorer.createLocalizationTable",
+          "command": "rojoExplorer.createStringValue",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@10"
         },
         {
-          "command": "rojoExplorer.createJsonModule",
+          "command": "rojoExplorer.createLocalizationTable",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@11"
         },
         {
-          "command": "rojoExplorer.createTomlModule",
+          "command": "rojoExplorer.createJsonModule",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@12"
+        },
+        {
+          "command": "rojoExplorer.createTomlModule",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@13"
         }
       ]
     },

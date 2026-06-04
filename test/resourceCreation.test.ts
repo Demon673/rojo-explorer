@@ -139,6 +139,33 @@ describe("resource creation planning", () => {
     });
   });
 
+  it("creates BindableFunctions as directories with init.meta.json className", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "GetLocalRoundState",
+        kind: "BindableFunction",
+      },
+      fsWithExistingDirectories([root]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        kind: "BindableFunction",
+        resourceName: "GetLocalRoundState",
+        targetPath: path.join(root, "GetLocalRoundState"),
+        entryType: "directory",
+        additionalFiles: [
+          {
+            targetPath: path.join(root, "GetLocalRoundState", "init.meta.json"),
+            content: "{\n  \"className\": \"BindableFunction\"\n}\n",
+          },
+        ],
+      },
+    });
+  });
+
   it("creates StringValues as text files", async () => {
     const result = await planResourceCreation(
       {

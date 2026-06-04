@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.21.0 - Unreleased
+
+- Add a `New BindableFunction` command that creates a Rojo directory resource with `init.meta.json` className metadata.
+- Keep BindableFunction creation source-backed through Rojo metadata instead of generating binary Roblox assets.
+
 ## 0.20.0 - Unreleased
 
 - Add a `New BindableEvent` command that creates a Rojo directory resource with `init.meta.json` className metadata.

@@ -118,6 +118,9 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.createBindableEvent", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "BindableEvent"),
     ),
+    vscode.commands.registerCommand("rojoExplorer.createBindableFunction", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "BindableFunction"),
+    ),
     vscode.commands.registerCommand("rojoExplorer.createStringValue", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "StringValue"),
     ),
@@ -790,6 +793,8 @@ function localizeResourceKind(kind: CreatableResourceKind): string {
       return vscode.l10n.t("RemoteFunction");
     case "BindableEvent":
       return vscode.l10n.t("BindableEvent");
+    case "BindableFunction":
+      return vscode.l10n.t("BindableFunction");
     case "StringValue":
       return vscode.l10n.t("StringValue");
     case "LocalizationTable":

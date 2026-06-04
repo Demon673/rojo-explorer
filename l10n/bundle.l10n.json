@@ -42,6 +42,7 @@
   "RemoteEvent": "RemoteEvent",
   "RemoteFunction": "RemoteFunction",
   "BindableEvent": "BindableEvent",
+  "BindableFunction": "BindableFunction",
   "StringValue": "StringValue",
   "LocalizationTable": "LocalizationTable",
   "JSON Module": "JSON Module",

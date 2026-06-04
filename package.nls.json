@@ -18,6 +18,7 @@
   "rojoExplorer.commands.createRemoteEvent.title": "New RemoteEvent",
   "rojoExplorer.commands.createRemoteFunction.title": "New RemoteFunction",
   "rojoExplorer.commands.createBindableEvent.title": "New BindableEvent",
+  "rojoExplorer.commands.createBindableFunction.title": "New BindableFunction",
   "rojoExplorer.commands.createStringValue.title": "New StringValue",
   "rojoExplorer.commands.createLocalizationTable.title": "New LocalizationTable",
   "rojoExplorer.commands.createJsonModule.title": "New JSON Module",

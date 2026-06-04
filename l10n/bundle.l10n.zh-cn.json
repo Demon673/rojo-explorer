@@ -42,6 +42,7 @@
   "RemoteEvent": "远程事件",
   "RemoteFunction": "远程函数",
   "BindableEvent": "可绑定事件",
+  "BindableFunction": "可绑定函数",
   "StringValue": "字符串值",
   "LocalizationTable": "本地化表",
   "JSON Module": "JSON 模块",

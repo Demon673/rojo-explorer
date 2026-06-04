@@ -588,6 +588,8 @@ function iconForClassName(className: string): vscode.ThemeIcon {
       return new vscode.ThemeIcon("symbol-method");
     case "BindableEvent":
       return new vscode.ThemeIcon("symbol-event");
+    case "BindableFunction":
+      return new vscode.ThemeIcon("symbol-method");
     case "StringValue":
       return new vscode.ThemeIcon("symbol-string");
     case "LocalizationTable":
