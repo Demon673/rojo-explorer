@@ -27,6 +27,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Moves Rojo-backed filesystem resources by dragging them onto filesystem-backed folder resources.
 - Deletes Rojo-backed filesystem resources after confirmation, using the OS trash when available.
 - Opens or creates sidecar `.meta.json` files for filesystem-discovered resources.
+- Opens or creates `init.meta.json` files for directory-backed and init-backed filesystem resources.
 - Marks project-controlled resources, such as project file mappings and included projects.
 - Edits project mapping Studio names by renaming the corresponding key in `.project.json` without moving the mapped source path.
 - Edits project mapping source paths by updating `$path` values in `.project.json` after validating the selected source path.

@@ -16,6 +16,7 @@
   "rojoExplorer.commands.renameResource.title": "重命名资源",
   "rojoExplorer.commands.duplicateResource.title": "复制资源",
   "rojoExplorer.commands.openResourceMeta.title": "打开/创建 Meta 文件",
+  "rojoExplorer.commands.openResourceInitMeta.title": "打开/创建 Init Meta 文件",
   "rojoExplorer.commands.moveResource.title": "移动资源...",
   "rojoExplorer.commands.deleteResource.title": "删除资源",
   "rojoExplorer.commands.editProjectMapping.title": "编辑项目映射...",

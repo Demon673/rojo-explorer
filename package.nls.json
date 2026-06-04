@@ -16,6 +16,7 @@
   "rojoExplorer.commands.renameResource.title": "Rename Resource",
   "rojoExplorer.commands.duplicateResource.title": "Duplicate Resource",
   "rojoExplorer.commands.openResourceMeta.title": "Open/Create Meta File",
+  "rojoExplorer.commands.openResourceInitMeta.title": "Open/Create Init Meta File",
   "rojoExplorer.commands.moveResource.title": "Move Resource...",
   "rojoExplorer.commands.deleteResource.title": "Delete Resource",
   "rojoExplorer.commands.editProjectMapping.title": "Edit Project Mapping...",

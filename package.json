@@ -45,6 +45,7 @@
     "onCommand:rojoExplorer.renameResource",
     "onCommand:rojoExplorer.duplicateResource",
     "onCommand:rojoExplorer.openResourceMeta",
+    "onCommand:rojoExplorer.openResourceInitMeta",
     "onCommand:rojoExplorer.moveResource",
     "onCommand:rojoExplorer.deleteResource",
     "onCommand:rojoExplorer.editProjectMapping",
@@ -128,6 +129,11 @@
         "icon": "$(json)"
       },
       {
+        "command": "rojoExplorer.openResourceInitMeta",
+        "title": "%rojoExplorer.commands.openResourceInitMeta.title%",
+        "icon": "$(json)"
+      },
+      {
         "command": "rojoExplorer.moveResource",
         "title": "%rojoExplorer.commands.moveResource.title%",
         "icon": "$(arrow-right)"
@@ -203,14 +209,19 @@
           "group": "resource-edit@4"
         },
         {
+          "command": "rojoExplorer.openResourceInitMeta",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /initMetaEditable/",
+          "group": "resource-edit@5"
+        },
+        {
           "command": "rojoExplorer.editProjectMapping",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /projectControlled/",
-          "group": "resource-edit@5"
+          "group": "resource-edit@6"
         },
         {
           "command": "rojoExplorer.deleteResource",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /deletable/",
-          "group": "resource-edit@6"
+          "group": "resource-edit@7"
         },
         {
           "command": "rojoExplorer.createFolder",

@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.10.0 - Unreleased
+
+- Add an action to open or create `init.meta.json` files for directory-backed and init-backed filesystem resources.
+- Keep `init.meta.json` editing separate from sidecar `.meta.json` editing because Rojo applies those files to different resource scopes.
+
 ## 0.9.0 - Unreleased
 
 - Add an action to open or create sidecar `.meta.json` files for filesystem-discovered resources.
