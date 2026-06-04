@@ -14,6 +14,7 @@
   "rojoExplorer.commands.createLocalScript.title": "新建 LocalScript",
   "rojoExplorer.commands.createModuleScript.title": "新建 ModuleScript",
   "rojoExplorer.commands.createModel.title": "新建 Model",
+  "rojoExplorer.commands.createStringValue.title": "新建 StringValue",
   "rojoExplorer.commands.renameResource.title": "重命名资源",
   "rojoExplorer.commands.duplicateResource.title": "复制资源",
   "rojoExplorer.commands.openResourceMeta.title": "打开/创建 Meta 文件",

@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.12.0 - Unreleased
+
+- Add a `New StringValue` command that creates Rojo `.txt` resources under filesystem-backed folders.
+- Keep StringValue creation source-backed by Rojo plain text files.
+
 ## 0.11.0 - Unreleased
 
 - Add a `New Model` command that creates a Rojo directory resource with `init.meta.json` className metadata.

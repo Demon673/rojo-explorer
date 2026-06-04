@@ -3,7 +3,7 @@ import * as path from "node:path";
 import { RojoFileSystem, RojoFsEntryType } from "./domain";
 import { inferFileRule } from "./domain/rojoSyncRules";
 
-export type CreatableResourceKind = "Folder" | "Script" | "LocalScript" | "ModuleScript" | "Model";
+export type CreatableResourceKind = "Folder" | "Script" | "LocalScript" | "ModuleScript" | "Model" | "StringValue";
 
 export interface ResourceCreationRequest {
   parentDirectoryPath: string;
@@ -122,6 +122,14 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
         ],
       };
     }
+    case "StringValue":
+      return {
+        kind,
+        resourceName,
+        targetPath: path.join(parentDirectoryPath, `${resourceName}.txt`),
+        entryType: "file",
+        content: "",
+      };
     case "Script":
       return scriptPlan(parentDirectoryPath, resourceName, kind, ".server.lua");
     case "LocalScript":
@@ -134,7 +142,7 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
 function scriptPlan(
   parentDirectoryPath: string,
   resourceName: string,
-  kind: Exclude<CreatableResourceKind, "Folder" | "Model">,
+  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "StringValue">,
   suffix: string,
 ): ResourceCreationPlan {
   return {
@@ -146,7 +154,7 @@ function scriptPlan(
   };
 }
 
-function defaultScriptContent(kind: Exclude<CreatableResourceKind, "Folder" | "Model">): string {
+function defaultScriptContent(kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "StringValue">): string {
   if (kind === "ModuleScript") {
     return "return {}\n";
   }

@@ -100,6 +100,9 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.createModel", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "Model"),
     ),
+    vscode.commands.registerCommand("rojoExplorer.createStringValue", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "StringValue"),
+    ),
     vscode.commands.registerCommand("rojoExplorer.renameResource", (node?: ExplorerNode) =>
       renameResource(provider, fileSystem, node),
     ),
@@ -754,6 +757,8 @@ function localizeResourceKind(kind: CreatableResourceKind): string {
       return vscode.l10n.t("ModuleScript");
     case "Model":
       return vscode.l10n.t("Model");
+    case "StringValue":
+      return vscode.l10n.t("StringValue");
   }
 }
 

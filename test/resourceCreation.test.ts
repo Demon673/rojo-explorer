@@ -58,6 +58,28 @@ describe("resource creation planning", () => {
     });
   });
 
+  it("creates StringValues as text files", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "DisplayName",
+        kind: "StringValue",
+      },
+      fsWithExistingDirectories([root]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        kind: "StringValue",
+        resourceName: "DisplayName",
+        targetPath: path.join(root, "DisplayName.txt"),
+        entryType: "file",
+        content: "",
+      },
+    });
+  });
+
   it("rejects empty names and names with path separators", async () => {
     for (const resourceName of ["", "  ", "Bad/Name", "Bad\\Name"]) {
       const result = await planResourceCreation(
@@ -122,6 +144,23 @@ describe("resource creation planning", () => {
     if (!result.ok) {
       expect(result.reason).toBe("targetExists");
       expect(result.targetPath).toBe(path.join(root, "Weapon"));
+    }
+  });
+
+  it("rejects StringValue name conflicts across different filesystem forms", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "DisplayName",
+        kind: "StringValue",
+      },
+      fsWithEntries([{ name: "DisplayName.lua", type: "file" }], [root]),
+    );
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toBe("targetExists");
+      expect(result.targetPath).toBe(path.join(root, "DisplayName.lua"));
     }
   });
 
