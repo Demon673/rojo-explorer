@@ -1,6 +1,7 @@
 {
   "Copied Studio path: {0}": "Copied Studio path: {0}",
   "Copied source path: {0}": "Copied source path: {0}",
+  "Copied relative source path: {0}": "Copied relative source path: {0}",
   "Source path does not exist: {0}": "Source path does not exist: {0}",
   "Open Resource": "Open Resource",
   "Select Resource": "Select Resource",

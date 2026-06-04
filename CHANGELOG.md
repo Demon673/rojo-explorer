@@ -2,6 +2,10 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.16.0 - Unreleased
+
+- Add a command to copy workspace-relative source paths from Rojo Explorer nodes.
+
 ## 0.15.0 - Unreleased
 
 - Add a `New TOML Module` command that creates Rojo `.toml` ModuleScript resources under filesystem-backed folders.

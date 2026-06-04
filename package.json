@@ -38,6 +38,7 @@
     "onCommand:rojoExplorer.revealInVsCodeExplorer",
     "onCommand:rojoExplorer.copyStudioPath",
     "onCommand:rojoExplorer.copySourcePath",
+    "onCommand:rojoExplorer.copyRelativeSourcePath",
     "onCommand:rojoExplorer.createFolder",
     "onCommand:rojoExplorer.createScript",
     "onCommand:rojoExplorer.createLocalScript",
@@ -97,6 +98,11 @@
         "command": "rojoExplorer.copySourcePath",
         "title": "%rojoExplorer.commands.copySourcePath.title%",
         "icon": "$(clippy)"
+      },
+      {
+        "command": "rojoExplorer.copyRelativeSourcePath",
+        "title": "%rojoExplorer.commands.copyRelativeSourcePath.title%",
+        "icon": "$(copy)"
       },
       {
         "command": "rojoExplorer.createFolder",
@@ -215,6 +221,11 @@
         },
         {
           "command": "rojoExplorer.copySourcePath",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /resource/",
+          "group": "navigation"
+        },
+        {
+          "command": "rojoExplorer.copyRelativeSourcePath",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /resource/",
           "group": "navigation"
         },

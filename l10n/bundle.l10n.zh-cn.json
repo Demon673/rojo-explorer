@@ -1,6 +1,7 @@
 {
   "Copied Studio path: {0}": "已复制 Studio 路径：{0}",
   "Copied source path: {0}": "已复制源路径：{0}",
+  "Copied relative source path: {0}": "已复制相对源路径：{0}",
   "Source path does not exist: {0}": "源路径不存在：{0}",
   "Open Resource": "打开资源",
   "Select Resource": "选择资源",

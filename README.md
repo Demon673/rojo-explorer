@@ -18,7 +18,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Opens or reveals mapped source files and folders from the tree context menu.
 - Keeps expandable nodes Studio-like: clicking the label selects the node, and the disclosure arrow expands it.
 - Copies Studio paths like `game.ReplicatedStorage.Shared.Foo`.
-- Copies source filesystem paths from mapped resources and diagnostics.
+- Copies absolute and workspace-relative source filesystem paths from mapped resources and diagnostics.
 - Provides Simplified Chinese localization for VS Code users running the `zh-cn` display language.
 - Creates new Rojo-backed folders, scripts, local scripts, module scripts, JSON/TOML modules, models, string values, and localization tables under filesystem-backed folder resources.
 - Renames Rojo-backed filesystem resources while preserving file suffix semantics and sibling `.meta.json` files.

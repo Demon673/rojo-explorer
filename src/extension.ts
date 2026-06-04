@@ -85,6 +85,15 @@ export function activate(context: vscode.ExtensionContext): void {
       await vscode.env.clipboard.writeText(node.resourceUri.fsPath);
       void vscode.window.showInformationMessage(vscode.l10n.t("Copied source path: {0}", node.resourceUri.fsPath));
     }),
+    vscode.commands.registerCommand("rojoExplorer.copyRelativeSourcePath", async (node?: ExplorerNode) => {
+      if (!node?.resourceUri) {
+        return;
+      }
+
+      const relativePath = vscode.workspace.asRelativePath(node.resourceUri, false);
+      await vscode.env.clipboard.writeText(relativePath);
+      void vscode.window.showInformationMessage(vscode.l10n.t("Copied relative source path: {0}", relativePath));
+    }),
     vscode.commands.registerCommand("rojoExplorer.createFolder", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "Folder"),
     ),
