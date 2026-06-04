@@ -74,6 +74,8 @@ export interface RojoInstanceNode {
   className: string;
   classNameSource: RojoClassNameSource;
   studioPath: string[];
+  projectFilePath?: string;
+  projectTreePath?: string[];
   source?: RojoSourceRef;
   properties?: Record<string, unknown>;
   ignoreUnknownInstances?: boolean;

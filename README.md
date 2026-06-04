@@ -21,9 +21,10 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Provides Simplified Chinese localization for VS Code users running the `zh-cn` display language.
 - Creates new Rojo-backed folders, scripts, local scripts, and module scripts under filesystem-backed folder resources.
 - Renames Rojo-backed filesystem resources while preserving file suffix semantics and sibling `.meta.json` files.
-- Marks project-controlled resources, such as project file mappings and included projects, and opens the owning project file for mapping edits.
+- Marks project-controlled resources, such as project file mappings and included projects.
+- Edits project mapping Studio names by renaming the corresponding key in `.project.json` without moving the mapped source path.
 
-Resource management is intentionally narrow: creation works under mapped directories, rename works only for filesystem-discovered resources that do not require project JSON edits, and both paths check for generated path conflicts.
+Resource management is intentionally narrow: creation works under mapped directories, filesystem rename works only for filesystem-discovered resources, and project mapping rename changes only Studio names defined in project files. These paths check for generated path or sibling mapping conflicts.
 
 Rojo Explorer does not automatically edit project mappings, delete, move, build, serve, or sync resources.
 

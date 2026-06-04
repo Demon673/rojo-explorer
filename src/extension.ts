@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 import { ExplorerNode, RojoExplorerProvider } from "./rojoExplorerProvider";
+import { planProjectMappingRename, ProjectMappingRenameFailureReason } from "./projectMappingRename";
 import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
 import { planResourceRename, ResourceRenameFailureReason } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
@@ -84,15 +85,9 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.renameResource", (node?: ExplorerNode) =>
       renameResource(provider, fileSystem, node),
     ),
-    vscode.commands.registerCommand("rojoExplorer.editProjectMapping", async (node?: ExplorerNode) => {
-      const projectMappingUri = provider.getProjectMappingUri(node);
-      if (!projectMappingUri) {
-        void vscode.window.showWarningMessage(vscode.l10n.t("Select a project-controlled resource first."));
-        return;
-      }
-
-      await openTextDocument(projectMappingUri);
-    }),
+    vscode.commands.registerCommand("rojoExplorer.editProjectMapping", (node?: ExplorerNode) =>
+      editProjectMapping(provider, node),
+    ),
   );
 }
 
@@ -175,6 +170,89 @@ async function createResource(
   if (result.plan.entryType === "file") {
     await openTextDocument(targetUri);
   }
+}
+
+async function editProjectMapping(provider: RojoExplorerProvider, node: ExplorerNode | undefined): Promise<void> {
+  const projectMappingUri = provider.getProjectMappingUri(node);
+  if (!projectMappingUri) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("Select a project-controlled resource first."));
+    return;
+  }
+
+  const actions = [
+    ...(provider.canRenameProjectMapping(node)
+      ? [{ label: vscode.l10n.t("Rename Studio Name"), action: "renameStudioName" as const }]
+      : []),
+    { label: vscode.l10n.t("Open Project File"), action: "openProjectFile" as const },
+  ];
+  const selected = await vscode.window.showQuickPick(actions, {
+    placeHolder: vscode.l10n.t("Edit Project Mapping"),
+  });
+
+  if (!selected) {
+    return;
+  }
+
+  if (selected.action === "openProjectFile") {
+    await openTextDocument(projectMappingUri);
+    return;
+  }
+
+  await renameProjectMapping(provider, node, projectMappingUri);
+}
+
+async function renameProjectMapping(
+  provider: RojoExplorerProvider,
+  node: ExplorerNode | undefined,
+  projectMappingUri: vscode.Uri,
+): Promise<void> {
+  const currentName = node?.instance?.name;
+  const projectTreePath = node?.instance?.projectTreePath;
+  if (!currentName || !projectTreePath || projectTreePath.length === 0) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("This project mapping cannot be renamed safely yet."));
+    return;
+  }
+
+  const newName = await vscode.window.showInputBox({
+    prompt: vscode.l10n.t("Rename Studio name for {0}", currentName),
+    placeHolder: vscode.l10n.t("Studio name"),
+    value: currentName,
+    valueSelection: [0, currentName.length],
+    validateInput(value) {
+      const trimmed = value.trim();
+      if (trimmed.length === 0) {
+        return vscode.l10n.t("Studio name is required.");
+      }
+
+      if (trimmed.includes("/") || trimmed.includes("\\")) {
+        return vscode.l10n.t("Studio name cannot contain path separators.");
+      }
+
+      return undefined;
+    },
+  });
+
+  if (newName === undefined) {
+    return;
+  }
+
+  const projectContent = Buffer.from(await vscode.workspace.fs.readFile(projectMappingUri)).toString("utf8");
+  const result = planProjectMappingRename(projectContent, {
+    projectFilePath: projectMappingUri.fsPath,
+    projectTreePath,
+    newName,
+  });
+
+  if (!result.ok) {
+    void vscode.window.showWarningMessage(localizeProjectMappingRenameFailure(result.reason));
+    return;
+  }
+
+  await vscode.workspace.fs.writeFile(projectMappingUri, Buffer.from(result.plan.updatedContent, "utf8"));
+  provider.refresh();
+  void vscode.window.showInformationMessage(
+    vscode.l10n.t("Renamed project mapping {0} to {1}", result.plan.currentName, result.plan.newName),
+  );
 }
 
 async function renameResource(
@@ -287,6 +365,23 @@ function localizeRenameFailure(reason: ResourceRenameFailureReason, targetPath: 
         : vscode.l10n.t("A resource with that Rojo name already exists.");
     case "unchangedName":
       return vscode.l10n.t("Resource name is unchanged.");
+  }
+}
+
+function localizeProjectMappingRenameFailure(reason: ProjectMappingRenameFailureReason): string {
+  switch (reason) {
+    case "invalidJson":
+      return vscode.l10n.t("Project file contains invalid JSON.");
+    case "invalidName":
+      return vscode.l10n.t("Project mapping names cannot be empty or contain path separators.");
+    case "mappingNotFound":
+      return vscode.l10n.t("Project mapping was not found in the project file.");
+    case "rootMapping":
+      return vscode.l10n.t("The project root mapping cannot be renamed here.");
+    case "targetExists":
+      return vscode.l10n.t("A project mapping with that name already exists.");
+    case "unchangedName":
+      return vscode.l10n.t("Project mapping name is unchanged.");
   }
 }
 

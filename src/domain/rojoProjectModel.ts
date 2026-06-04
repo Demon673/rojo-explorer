@@ -118,7 +118,7 @@ export async function buildRojoProjectModel(
     return { config, root, diagnostics };
   }
 
-  const root = await buildInstanceFromDescription(projectName, document.tree, context, getRootStudioPath(projectName, document.tree), true);
+  const root = await buildInstanceFromDescription(projectName, document.tree, context, getRootStudioPath(projectName, document.tree), true, []);
   root.source = {
     fsPath: normalizedProjectPath,
     kind: "project",
@@ -139,6 +139,7 @@ async function buildInstanceFromDescription(
   context: BuildContext,
   studioPath: string[],
   isRoot: boolean,
+  projectTreePath: string[],
 ): Promise<RojoInstanceNode> {
   const projectClassName = typeof value.$className === "string" ? value.$className : undefined;
   const mappedPath = typeof value.$path === "string" ? resolveRojoPath(context.config.projectRootPath, value.$path) : undefined;
@@ -210,6 +211,7 @@ async function buildInstanceFromDescription(
           context,
           [...studioPath, childName],
           false,
+          [...projectTreePath, childName],
         ),
       ),
   );
@@ -219,6 +221,8 @@ async function buildInstanceFromDescription(
     className,
     classNameSource,
     studioPath,
+    projectFilePath: context.config.projectFilePath,
+    projectTreePath,
     source,
     properties,
     ignoreUnknownInstances,
@@ -532,6 +536,8 @@ function createFallbackRoot(projectName: string, projectFilePath: string): RojoI
     className: "DataModel",
     classNameSource: "fallback",
     studioPath: ["game"],
+    projectFilePath,
+    projectTreePath: [],
     source: {
       fsPath: projectFilePath,
       kind: "project",

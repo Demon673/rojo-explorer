@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  getProjectControlBadge,
   getProjectControlBadgeForSourceKind,
   getProjectMappingFilePath,
+  isProjectControlledResource,
   isProjectControlledSourceKind,
 } from "../src/projectControlledResources";
 
@@ -22,6 +24,16 @@ describe("project controlled resource helpers", () => {
     expect(isProjectControlledSourceKind("directory")).toBe(false);
   });
 
+  it("classifies explicit project tree nodes without filesystem sources", () => {
+    const info = {
+      projectFilePath: "default.project.json",
+      projectTreePath: ["HttpService"],
+    };
+
+    expect(getProjectControlBadge(info)).toBe("projectMapping");
+    expect(isProjectControlledResource(info)).toBe(true);
+  });
+
   it("resolves the project file that should be edited for each controlled kind", () => {
     expect(getProjectMappingFilePath("project", "default.project.json", "ignored.project.json")).toBe("default.project.json");
     expect(getProjectMappingFilePath("projectInclusion", "src/Package/default.project.json", "root.project.json")).toBe(
@@ -30,6 +42,7 @@ describe("project controlled resource helpers", () => {
     expect(getProjectMappingFilePath("projectTree", "src/ReplicatedStorage", "default.project.json")).toBe(
       "default.project.json",
     );
+    expect(getProjectMappingFilePath(undefined, undefined, "default.project.json")).toBe("default.project.json");
     expect(getProjectMappingFilePath("directory", "src/Folder", "default.project.json")).toBeUndefined();
   });
 });

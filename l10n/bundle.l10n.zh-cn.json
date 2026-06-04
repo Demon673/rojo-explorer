@@ -46,5 +46,20 @@
   "Renamed {0} to {1}": "已将 {0} 重命名为 {1}",
   "Source path does not exist.": "源路径不存在。",
   "Resource name is unchanged.": "资源名称未变化。",
-  "Select a project-controlled resource first.": "请先选择一个项目控制资源。"
+  "Select a project-controlled resource first.": "请先选择一个项目控制资源。",
+  "Edit Project Mapping": "编辑项目映射",
+  "Rename Studio Name": "重命名 Studio 名称",
+  "Open Project File": "打开项目文件",
+  "This project mapping cannot be renamed safely yet.": "暂时不能安全重命名此项目映射。",
+  "Rename Studio name for {0}": "重命名 {0} 的 Studio 名称",
+  "Studio name": "Studio 名称",
+  "Studio name is required.": "Studio 名称不能为空。",
+  "Studio name cannot contain path separators.": "Studio 名称不能包含路径分隔符。",
+  "Renamed project mapping {0} to {1}": "已将项目映射 {0} 重命名为 {1}",
+  "Project file contains invalid JSON.": "项目文件包含无效 JSON。",
+  "Project mapping names cannot be empty or contain path separators.": "项目映射名称不能为空，也不能包含路径分隔符。",
+  "Project mapping was not found in the project file.": "项目文件中未找到该项目映射。",
+  "The project root mapping cannot be renamed here.": "不能在这里重命名项目根映射。",
+  "A project mapping with that name already exists.": "已存在同名项目映射。",
+  "Project mapping name is unchanged.": "项目映射名称未变化。"
 }

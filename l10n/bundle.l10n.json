@@ -46,5 +46,20 @@
   "Renamed {0} to {1}": "Renamed {0} to {1}",
   "Source path does not exist.": "Source path does not exist.",
   "Resource name is unchanged.": "Resource name is unchanged.",
-  "Select a project-controlled resource first.": "Select a project-controlled resource first."
+  "Select a project-controlled resource first.": "Select a project-controlled resource first.",
+  "Edit Project Mapping": "Edit Project Mapping",
+  "Rename Studio Name": "Rename Studio Name",
+  "Open Project File": "Open Project File",
+  "This project mapping cannot be renamed safely yet.": "This project mapping cannot be renamed safely yet.",
+  "Rename Studio name for {0}": "Rename Studio name for {0}",
+  "Studio name": "Studio name",
+  "Studio name is required.": "Studio name is required.",
+  "Studio name cannot contain path separators.": "Studio name cannot contain path separators.",
+  "Renamed project mapping {0} to {1}": "Renamed project mapping {0} to {1}",
+  "Project file contains invalid JSON.": "Project file contains invalid JSON.",
+  "Project mapping names cannot be empty or contain path separators.": "Project mapping names cannot be empty or contain path separators.",
+  "Project mapping was not found in the project file.": "Project mapping was not found in the project file.",
+  "The project root mapping cannot be renamed here.": "The project root mapping cannot be renamed here.",
+  "A project mapping with that name already exists.": "A project mapping with that name already exists.",
+  "Project mapping name is unchanged.": "Project mapping name is unchanged."
 }

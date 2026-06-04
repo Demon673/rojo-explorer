@@ -11,7 +11,7 @@ import {
 } from "./domain";
 import { shouldOpenResourceOnClick } from "./explorerNodeBehavior";
 import {
-  getProjectControlBadgeForSourceKind,
+  getProjectControlBadge,
   getProjectMappingFilePath,
   ProjectControlBadge,
 } from "./projectControlledResources";
@@ -93,9 +93,13 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     return this.getProjectMappingUri(node) !== undefined;
   }
 
+  canRenameProjectMapping(node?: ExplorerNode): boolean {
+    return Boolean(node?.instance?.projectFilePath && node.instance.projectTreePath && node.instance.projectTreePath.length > 0);
+  }
+
   getProjectMappingUri(node?: ExplorerNode): vscode.Uri | undefined {
     const source = node?.instance?.source;
-    const projectFilePath = getProjectMappingFilePath(source?.kind, source?.fsPath, node?.projectUri?.fsPath);
+    const projectFilePath = getProjectMappingFilePath(source?.kind, source?.fsPath, node?.instance?.projectFilePath ?? node?.projectUri?.fsPath);
     return projectFilePath ? vscode.Uri.file(projectFilePath) : undefined;
   }
 
@@ -311,7 +315,7 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
   }
 
   private createInstanceDescription(instance: RojoInstanceNode): string {
-    const sourceBadge = localizeProjectControlBadge(getProjectControlBadgeForSourceKind(instance.source?.kind));
+    const sourceBadge = localizeProjectControlBadge(getProjectControlBadgeForInstance(instance));
     const baseDescription = sourceBadge ? vscode.l10n.t("{0} - {1}", instance.className, sourceBadge) : instance.className;
 
     if (instance.diagnostics.some((diagnostic) => diagnostic.severity === "error")) {
@@ -327,7 +331,7 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
 
   private createInstanceTooltip(instance: RojoInstanceNode): string {
     const diagnostics = instance.diagnostics.map((diagnostic) => this.formatDiagnosticLine(diagnostic));
-    const sourceBadge = localizeProjectControlBadge(getProjectControlBadgeForSourceKind(instance.source?.kind));
+    const sourceBadge = localizeProjectControlBadge(getProjectControlBadgeForInstance(instance));
     return [
       instance.className,
       sourceBadge,
@@ -394,6 +398,14 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
       label,
     };
   }
+}
+
+function getProjectControlBadgeForInstance(instance: RojoInstanceNode): ProjectControlBadge | undefined {
+  return getProjectControlBadge({
+    sourceKind: instance.source?.kind,
+    projectFilePath: instance.projectFilePath,
+    projectTreePath: instance.projectTreePath,
+  });
 }
 
 function localizeProjectControlBadge(badge: ProjectControlBadge | undefined): string | undefined {

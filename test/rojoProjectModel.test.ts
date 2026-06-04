@@ -17,15 +17,21 @@ describe("Rojo project model", () => {
 
     const replicatedStorage = child(model.root, "ReplicatedStorage");
     expect(replicatedStorage.className).toBe("ReplicatedStorage");
+    expect(replicatedStorage.projectFilePath).toBe(path.join(repoRoot, "fixtures", "basic-place", "default.project.json"));
+    expect(replicatedStorage.projectTreePath).toEqual(["ReplicatedStorage"]);
     expect(formatNodeStudioPath(child(child(replicatedStorage, "Shared"), "Util"))).toBe(
       "game.ReplicatedStorage.Shared.Util",
     );
     expect(child(child(replicatedStorage, "Shared"), "Util").className).toBe("ModuleScript");
+    expect(child(replicatedStorage, "Shared").projectTreePath).toBeUndefined();
     expect(child(replicatedStorage, "Config").className).toBe("ModuleScript");
     expect(child(replicatedStorage, "Remotes").className).toBe("Model");
 
     expect(child(model.root, "ServerScriptService").children[0].className).toBe("Script");
-    expect(child(child(model.root, "StarterPlayer"), "StarterPlayerScripts").children[0].className).toBe("LocalScript");
+    const starterPlayer = child(model.root, "StarterPlayer");
+    expect(starterPlayer.projectTreePath).toEqual(["StarterPlayer"]);
+    expect(child(starterPlayer, "StarterPlayerScripts").projectTreePath).toEqual(["StarterPlayer", "StarterPlayerScripts"]);
+    expect(child(starterPlayer, "StarterPlayerScripts").children[0].className).toBe("LocalScript");
   });
 
   it("models init scripts as the containing directory instance", async () => {
