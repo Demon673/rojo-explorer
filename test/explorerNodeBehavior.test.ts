@@ -43,7 +43,7 @@ describe("Explorer click behavior", () => {
     ).toBe(false);
   });
 
-  it("does not open expandable instances on click even when backed by an init file", () => {
+  it("opens expandable init-backed instances on click without using label click to expand them", () => {
     expect(
       getExplorerClickAction({
         kind: "instance",
@@ -51,7 +51,7 @@ describe("Explorer click behavior", () => {
         hasResource: true,
         sourceEntryType: "file",
       }),
-    ).toBe("selectOnly");
+    ).toBe("openResource");
 
     expect(
       shouldOpenResourceOnClick({
@@ -60,7 +60,7 @@ describe("Explorer click behavior", () => {
         hasResource: true,
         sourceEntryType: "file",
       }),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it("does not open projects, diagnostics, or messages as normal resources", () => {
@@ -76,8 +76,8 @@ describe("Explorer click behavior", () => {
     }
   });
 
-  it("selects expandable project and folder nodes without using label click to open them", () => {
-    for (const kind of ["project", "workspaceFolder", "instance"]) {
+  it("selects expandable project and directory-backed nodes without using label click to open them", () => {
+    for (const kind of ["project", "workspaceFolder"]) {
       expect(
         getExplorerClickAction({
           kind,
@@ -87,5 +87,14 @@ describe("Explorer click behavior", () => {
         }),
       ).toBe("selectOnly");
     }
+
+    expect(
+      getExplorerClickAction({
+        kind: "instance",
+        hasChildren: true,
+        hasResource: true,
+        sourceEntryType: "directory",
+      }),
+    ).toBe("selectOnly");
   });
 });

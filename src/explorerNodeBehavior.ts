@@ -10,13 +10,17 @@ export interface ExplorerClickBehaviorNode {
 export type ExplorerClickAction = "openResource" | "selectOnly" | undefined;
 
 export function getExplorerClickAction(node: ExplorerClickBehaviorNode): ExplorerClickAction {
+  if (shouldOpenResourceOnClick(node)) {
+    return "openResource";
+  }
+
   if (node.hasChildren) {
     return "selectOnly";
   }
 
-  return shouldOpenResourceOnClick(node) ? "openResource" : undefined;
+  return undefined;
 }
 
 export function shouldOpenResourceOnClick(node: ExplorerClickBehaviorNode): boolean {
-  return node.kind === "instance" && node.hasResource && node.sourceEntryType === "file" && !node.hasChildren;
+  return node.kind === "instance" && node.hasResource && node.sourceEntryType === "file";
 }
