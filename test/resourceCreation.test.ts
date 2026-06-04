@@ -31,6 +31,33 @@ describe("resource creation planning", () => {
     await expectPlannedScript("ModuleScript", "SharedModule.lua", "return {}\n");
   });
 
+  it("creates Models as directories with init.meta.json className", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "Weapon",
+        kind: "Model",
+      },
+      fsWithExistingDirectories([root]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        kind: "Model",
+        resourceName: "Weapon",
+        targetPath: path.join(root, "Weapon"),
+        entryType: "directory",
+        additionalFiles: [
+          {
+            targetPath: path.join(root, "Weapon", "init.meta.json"),
+            content: "{\n  \"className\": \"Model\"\n}\n",
+          },
+        ],
+      },
+    });
+  });
+
   it("rejects empty names and names with path separators", async () => {
     for (const resourceName of ["", "  ", "Bad/Name", "Bad\\Name"]) {
       const result = await planResourceCreation(
@@ -78,6 +105,23 @@ describe("resource creation planning", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.reason).toBe("targetExists");
+    }
+  });
+
+  it("rejects Model directory conflicts", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "Weapon",
+        kind: "Model",
+      },
+      fsWithExistingDirectories([root, path.join(root, "Weapon")]),
+    );
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toBe("targetExists");
+      expect(result.targetPath).toBe(path.join(root, "Weapon"));
     }
   });
 

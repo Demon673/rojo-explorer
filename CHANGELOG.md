@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.11.0 - Unreleased
+
+- Add a `New Model` command that creates a Rojo directory resource with `init.meta.json` className metadata.
+- Keep Model creation source-backed by Rojo metadata instead of generating binary Roblox model assets.
+
 ## 0.10.0 - Unreleased
 
 - Add an action to open or create `init.meta.json` files for directory-backed and init-backed filesystem resources.

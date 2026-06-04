@@ -42,6 +42,7 @@
     "onCommand:rojoExplorer.createScript",
     "onCommand:rojoExplorer.createLocalScript",
     "onCommand:rojoExplorer.createModuleScript",
+    "onCommand:rojoExplorer.createModel",
     "onCommand:rojoExplorer.renameResource",
     "onCommand:rojoExplorer.duplicateResource",
     "onCommand:rojoExplorer.openResourceMeta",
@@ -112,6 +113,11 @@
         "command": "rojoExplorer.createModuleScript",
         "title": "%rojoExplorer.commands.createModuleScript.title%",
         "icon": "$(symbol-module)"
+      },
+      {
+        "command": "rojoExplorer.createModel",
+        "title": "%rojoExplorer.commands.createModel.title%",
+        "icon": "$(symbol-structure)"
       },
       {
         "command": "rojoExplorer.renameResource",
@@ -242,6 +248,11 @@
           "command": "rojoExplorer.createModuleScript",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@4"
+        },
+        {
+          "command": "rojoExplorer.createModel",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@5"
         }
       ]
     },

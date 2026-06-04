@@ -97,6 +97,9 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.createModuleScript", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "ModuleScript"),
     ),
+    vscode.commands.registerCommand("rojoExplorer.createModel", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "Model"),
+    ),
     vscode.commands.registerCommand("rojoExplorer.renameResource", (node?: ExplorerNode) =>
       renameResource(provider, fileSystem, node),
     ),
@@ -192,6 +195,9 @@ async function createResource(
     await vscode.workspace.fs.createDirectory(targetUri);
   } else {
     await vscode.workspace.fs.writeFile(targetUri, Buffer.from(result.plan.content ?? "", "utf8"));
+  }
+  for (const file of result.plan.additionalFiles ?? []) {
+    await vscode.workspace.fs.writeFile(vscode.Uri.file(file.targetPath), Buffer.from(file.content, "utf8"));
   }
 
   provider.refresh();
@@ -746,6 +752,8 @@ function localizeResourceKind(kind: CreatableResourceKind): string {
       return vscode.l10n.t("LocalScript");
     case "ModuleScript":
       return vscode.l10n.t("ModuleScript");
+    case "Model":
+      return vscode.l10n.t("Model");
   }
 }
 

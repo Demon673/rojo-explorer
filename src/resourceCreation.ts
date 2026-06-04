@@ -3,7 +3,7 @@ import * as path from "node:path";
 import { RojoFileSystem, RojoFsEntryType } from "./domain";
 import { inferFileRule } from "./domain/rojoSyncRules";
 
-export type CreatableResourceKind = "Folder" | "Script" | "LocalScript" | "ModuleScript";
+export type CreatableResourceKind = "Folder" | "Script" | "LocalScript" | "ModuleScript" | "Model";
 
 export interface ResourceCreationRequest {
   parentDirectoryPath: string;
@@ -17,6 +17,12 @@ export interface ResourceCreationPlan {
   targetPath: string;
   entryType: RojoFsEntryType;
   content?: string;
+  additionalFiles?: ResourceCreationFile[];
+}
+
+export interface ResourceCreationFile {
+  targetPath: string;
+  content: string;
 }
 
 export interface ResourceCreationResult {
@@ -101,6 +107,21 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
         targetPath: path.join(parentDirectoryPath, resourceName),
         entryType: "directory",
       };
+    case "Model": {
+      const targetPath = path.join(parentDirectoryPath, resourceName);
+      return {
+        kind,
+        resourceName,
+        targetPath,
+        entryType: "directory",
+        additionalFiles: [
+          {
+            targetPath: path.join(targetPath, "init.meta.json"),
+            content: JSON.stringify({ className: "Model" }, null, 2) + "\n",
+          },
+        ],
+      };
+    }
     case "Script":
       return scriptPlan(parentDirectoryPath, resourceName, kind, ".server.lua");
     case "LocalScript":
@@ -113,7 +134,7 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
 function scriptPlan(
   parentDirectoryPath: string,
   resourceName: string,
-  kind: Exclude<CreatableResourceKind, "Folder">,
+  kind: Exclude<CreatableResourceKind, "Folder" | "Model">,
   suffix: string,
 ): ResourceCreationPlan {
   return {
@@ -125,7 +146,7 @@ function scriptPlan(
   };
 }
 
-function defaultScriptContent(kind: Exclude<CreatableResourceKind, "Folder">): string {
+function defaultScriptContent(kind: Exclude<CreatableResourceKind, "Folder" | "Model">): string {
   if (kind === "ModuleScript") {
     return "return {}\n";
   }
