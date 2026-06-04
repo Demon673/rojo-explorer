@@ -41,6 +41,7 @@
   "StringValue": "字符串值",
   "LocalizationTable": "本地化表",
   "JSON Module": "JSON 模块",
+  "TOML Module": "TOML 模块",
   "Created {0}: {1}": "已创建 {0}：{1}",
   "Resource names cannot be empty or contain path separators.": "资源名称不能为空，也不能包含路径分隔符。",
   "Resources can only be created under filesystem-backed directories.": "只能在由文件系统目录支持的资源下创建子资源。",

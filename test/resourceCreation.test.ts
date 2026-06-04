@@ -124,6 +124,28 @@ describe("resource creation planning", () => {
     });
   });
 
+  it("creates TOML Modules as TOML files", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "Settings",
+        kind: "TOMLModule",
+      },
+      fsWithExistingDirectories([root]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        kind: "TOMLModule",
+        resourceName: "Settings",
+        targetPath: path.join(root, "Settings.toml"),
+        entryType: "file",
+        content: "",
+      },
+    });
+  });
+
   it("rejects empty names and names with path separators", async () => {
     for (const resourceName of ["", "  ", "Bad/Name", "Bad\\Name"]) {
       const result = await planResourceCreation(
@@ -239,6 +261,23 @@ describe("resource creation planning", () => {
     if (!result.ok) {
       expect(result.reason).toBe("targetExists");
       expect(result.targetPath).toBe(path.join(root, "Config.lua"));
+    }
+  });
+
+  it("rejects TOML Module name conflicts across different filesystem forms", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "Settings",
+        kind: "TOMLModule",
+      },
+      fsWithEntries([{ name: "Settings.json", type: "file" }], [root]),
+    );
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toBe("targetExists");
+      expect(result.targetPath).toBe(path.join(root, "Settings.json"));
     }
   });
 

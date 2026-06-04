@@ -46,6 +46,7 @@
     "onCommand:rojoExplorer.createStringValue",
     "onCommand:rojoExplorer.createLocalizationTable",
     "onCommand:rojoExplorer.createJsonModule",
+    "onCommand:rojoExplorer.createTomlModule",
     "onCommand:rojoExplorer.renameResource",
     "onCommand:rojoExplorer.duplicateResource",
     "onCommand:rojoExplorer.openResourceMeta",
@@ -136,6 +137,11 @@
         "command": "rojoExplorer.createJsonModule",
         "title": "%rojoExplorer.commands.createJsonModule.title%",
         "icon": "$(json)"
+      },
+      {
+        "command": "rojoExplorer.createTomlModule",
+        "title": "%rojoExplorer.commands.createTomlModule.title%",
+        "icon": "$(symbol-property)"
       },
       {
         "command": "rojoExplorer.renameResource",
@@ -286,6 +292,11 @@
           "command": "rojoExplorer.createJsonModule",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@8"
+        },
+        {
+          "command": "rojoExplorer.createTomlModule",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@9"
         }
       ]
     },

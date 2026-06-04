@@ -17,6 +17,7 @@
   "rojoExplorer.commands.createStringValue.title": "New StringValue",
   "rojoExplorer.commands.createLocalizationTable.title": "New LocalizationTable",
   "rojoExplorer.commands.createJsonModule.title": "New JSON Module",
+  "rojoExplorer.commands.createTomlModule.title": "New TOML Module",
   "rojoExplorer.commands.renameResource.title": "Rename Resource",
   "rojoExplorer.commands.duplicateResource.title": "Duplicate Resource",
   "rojoExplorer.commands.openResourceMeta.title": "Open/Create Meta File",

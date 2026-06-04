@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.15.0 - Unreleased
+
+- Add a `New TOML Module` command that creates Rojo `.toml` ModuleScript resources under filesystem-backed folders.
+- Create empty TOML modules as valid empty TOML documents.
+
 ## 0.14.0 - Unreleased
 
 - Add a `New JSON Module` command that creates Rojo `.json` ModuleScript resources under filesystem-backed folders.

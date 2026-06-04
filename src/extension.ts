@@ -109,6 +109,9 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.createJsonModule", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "JSONModule"),
     ),
+    vscode.commands.registerCommand("rojoExplorer.createTomlModule", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "TOMLModule"),
+    ),
     vscode.commands.registerCommand("rojoExplorer.renameResource", (node?: ExplorerNode) =>
       renameResource(provider, fileSystem, node),
     ),
@@ -769,6 +772,8 @@ function localizeResourceKind(kind: CreatableResourceKind): string {
       return vscode.l10n.t("LocalizationTable");
     case "JSONModule":
       return vscode.l10n.t("JSON Module");
+    case "TOMLModule":
+      return vscode.l10n.t("TOML Module");
   }
 }
 
