@@ -22,6 +22,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Copies absolute and workspace-relative source filesystem paths from mapped resources and diagnostics.
 - Provides Simplified Chinese localization for VS Code users running the `zh-cn` display language.
 - Creates new Rojo-backed folders, scripts, local scripts, module scripts, JSON/TOML modules, models, remote events/functions, bindable events/functions, string values, and localization tables under filesystem-backed folder resources.
+- Creates init scripts for filesystem-discovered Folder resources, allowing a Rojo directory to become a Script, LocalScript, or ModuleScript while keeping children.
 - Provides a `New Instance...` picker for supported directory-backed class resources that are represented through `init.meta.json`.
 - Renames Rojo-backed filesystem resources while preserving file suffix semantics and sibling `.meta.json` files.
 - Duplicates Rojo-backed filesystem resources while preserving file suffix semantics and sibling `.meta.json` files.

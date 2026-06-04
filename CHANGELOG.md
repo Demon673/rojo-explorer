@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.24.0 - Unreleased
+
+- Add a `Create Init Script...` command for filesystem-discovered Folder resources.
+- Create `init.server.lua`, `init.client.lua`, or `init.lua` through a safe planner that rejects existing init scripts.
+
 ## 0.23.0 - Unreleased
 
 - Add a `New Instance...` picker for supported meta-backed directory resources.

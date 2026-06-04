@@ -14,6 +14,7 @@
   "rojoExplorer.commands.createScript.title": "新建 Script",
   "rojoExplorer.commands.createLocalScript.title": "新建 LocalScript",
   "rojoExplorer.commands.createModuleScript.title": "新建 ModuleScript",
+  "rojoExplorer.commands.createInitScript.title": "创建 Init 脚本...",
   "rojoExplorer.commands.createInstance.title": "新建 Instance...",
   "rojoExplorer.commands.createModel.title": "新建 Model",
   "rojoExplorer.commands.createRemoteEvent.title": "新建 RemoteEvent",

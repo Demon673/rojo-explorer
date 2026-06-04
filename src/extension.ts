@@ -16,6 +16,12 @@ import {
 import { planResourceDeletion, ResourceDeletionFailureReason } from "./resourceDeletion";
 import { planResourceDuplicate, ResourceDuplicateFailureReason } from "./resourceDuplicate";
 import { planResourceInitMeta, ResourceInitMetaFailureReason } from "./resourceInitMeta";
+import {
+  getInitScriptResourceKinds,
+  planResourceInitScript,
+  type InitScriptResourceKind,
+  type ResourceInitScriptFailureReason,
+} from "./resourceInitScript";
 import { planResourceMeta, ResourceMetaFailureReason } from "./resourceMeta";
 import { planResourceMove, ResourceMoveFailureReason, ResourceMovePlan } from "./resourceMove";
 import { planResourceRename, ResourceRenameFailureReason } from "./resourceRename";
@@ -110,6 +116,9 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand("rojoExplorer.createModuleScript", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "ModuleScript"),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.createInitScript", (node?: ExplorerNode) =>
+      createInitScript(provider, fileSystem, node),
     ),
     vscode.commands.registerCommand("rojoExplorer.createInstance", (node?: ExplorerNode) =>
       createInstance(provider, fileSystem, node),
@@ -218,6 +227,71 @@ async function pickMetaBackedDirectoryResourceKind(): Promise<MetaBackedDirector
 
 interface MetaBackedDirectoryResourcePick extends vscode.QuickPickItem {
   resourceKind: MetaBackedDirectoryResourceKind;
+}
+
+async function createInitScript(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+): Promise<void> {
+  if (!provider.canCreateInitScript(node) || !node?.resourceUri || !node.instance) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("Select a filesystem-backed Folder resource first."));
+    return;
+  }
+
+  const selectedKind = await pickInitScriptResourceKind();
+  if (!selectedKind) {
+    return;
+  }
+
+  const result = await planResourceInitScript(
+    {
+      parentDirectoryPath: node.resourceUri.fsPath,
+      kind: selectedKind,
+    },
+    fileSystem,
+  );
+
+  if (!result.ok) {
+    void vscode.window.showWarningMessage(localizeInitScriptFailure(result.reason, result.targetPath));
+    return;
+  }
+
+  const targetUri = vscode.Uri.file(result.plan.targetPath);
+  await vscode.workspace.fs.writeFile(targetUri, Buffer.from(result.plan.content, "utf8"));
+  provider.refresh();
+  void vscode.window.showInformationMessage(
+    vscode.l10n.t("Created init {0} for {1}", localizeResourceKind(result.plan.kind), node.instance.name),
+  );
+  await openTextDocument(targetUri);
+}
+
+async function pickInitScriptResourceKind(): Promise<InitScriptResourceKind | undefined> {
+  const picks: InitScriptResourcePick[] = getInitScriptResourceKinds().map((resourceKind) => ({
+    label: localizeResourceKind(resourceKind),
+    description: getInitScriptFileName(resourceKind),
+    resourceKind,
+  }));
+  const selected = await vscode.window.showQuickPick<InitScriptResourcePick>(picks, {
+    placeHolder: vscode.l10n.t("Select init script type"),
+  });
+
+  return selected?.resourceKind;
+}
+
+interface InitScriptResourcePick extends vscode.QuickPickItem {
+  resourceKind: InitScriptResourceKind;
+}
+
+function getInitScriptFileName(kind: InitScriptResourceKind): string {
+  switch (kind) {
+    case "Script":
+      return "init.server.lua";
+    case "LocalScript":
+      return "init.client.lua";
+    case "ModuleScript":
+      return "init.lua";
+  }
 }
 
 async function createResource(
@@ -859,6 +933,21 @@ function localizeCreationFailure(reason: "invalidName" | "parentNotDirectory" | 
       return targetPath
         ? vscode.l10n.t("A resource with that Rojo name already exists: {0}", targetPath)
         : vscode.l10n.t("A resource with that Rojo name already exists.");
+  }
+}
+
+function localizeInitScriptFailure(reason: ResourceInitScriptFailureReason, targetPath: string | undefined): string {
+  switch (reason) {
+    case "parentNotDirectory":
+      return vscode.l10n.t("Init scripts can only be created under filesystem-backed folders.");
+    case "initScriptExists":
+      return targetPath
+        ? vscode.l10n.t("This folder already has an init script: {0}", targetPath)
+        : vscode.l10n.t("This folder already has an init script.");
+    case "targetExists":
+      return targetPath
+        ? vscode.l10n.t("The init script target path already exists: {0}", targetPath)
+        : vscode.l10n.t("The init script target path already exists.");
   }
 }
 

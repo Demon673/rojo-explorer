@@ -44,6 +44,7 @@ Rojo Explorer builds a Studio-style resource tree from `*.project.json` files an
 ## Resource Management Notes
 
 - Filesystem-backed create, rename, duplicate, move, and delete commands operate only on resources discovered from mapped source folders.
+- Filesystem-backed init script creation creates `init.server.lua`, `init.client.lua`, or `init.lua` only on filesystem-discovered Folder directories and rejects folders that already contain any init script variant.
 - Filesystem-backed Model creation creates a directory plus `init.meta.json` with `className` set to `Model`; it does not generate `.rbxm` or `.rbxmx` assets.
 - Filesystem-backed RemoteEvent creation creates a directory plus `init.meta.json` with `className` set to `RemoteEvent`; it does not generate binary Roblox assets.
 - Filesystem-backed RemoteFunction creation creates a directory plus `init.meta.json` with `className` set to `RemoteFunction`; it does not generate binary Roblox assets.

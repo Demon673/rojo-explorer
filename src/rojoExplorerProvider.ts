@@ -79,6 +79,18 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     return node?.kind === "instance" && node.instance?.source?.entryType === "directory" && Boolean(node.resourceUri);
   }
 
+  canCreateInitScript(node?: ExplorerNode): boolean {
+    const source = node?.instance?.source;
+    return Boolean(
+      node?.kind === "instance"
+      && node.resourceUri
+      && source?.exists
+      && source.kind === "directory"
+      && source.entryType === "directory"
+      && node.instance?.className === "Folder",
+    );
+  }
+
   canRenameResource(node?: ExplorerNode): boolean {
     const source = node?.instance?.source;
     if (node?.kind !== "instance" || !node.resourceUri || !source?.exists || !source.entryType) {
@@ -214,6 +226,9 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     item.contextValue = `${node.kind}${node.resourceUri ? ".resource" : ""}${node.studioPath ? ".studioPath" : ""}`;
     if (this.canCreateChildren(node)) {
       item.contextValue += ".createChildren";
+    }
+    if (this.canCreateInitScript(node)) {
+      item.contextValue += ".initScriptCreatable";
     }
     if (this.canRenameResource(node)) {
       item.contextValue += ".renameable";
