@@ -164,6 +164,12 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.createCFrameValue", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "CFrameValue"),
     ),
+    vscode.commands.registerCommand("rojoExplorer.createColor3Value", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "Color3Value"),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.createBrickColorValue", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "BrickColorValue"),
+    ),
     vscode.commands.registerCommand("rojoExplorer.createLocalizationTable", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "LocalizationTable"),
     ),
@@ -1003,6 +1009,10 @@ function localizeResourceKind(kind: CreatableResourceKind): string {
       return vscode.l10n.t("Vector3Value");
     case "CFrameValue":
       return vscode.l10n.t("CFrameValue");
+    case "Color3Value":
+      return vscode.l10n.t("Color3Value");
+    case "BrickColorValue":
+      return vscode.l10n.t("BrickColorValue");
     case "LocalizationTable":
       return vscode.l10n.t("LocalizationTable");
     case "JSONModule":

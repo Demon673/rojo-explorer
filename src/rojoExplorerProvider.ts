@@ -636,6 +636,9 @@ function iconForClassName(className: string): vscode.ThemeIcon {
     case "Vector3Value":
     case "CFrameValue":
       return new vscode.ThemeIcon("symbol-operator");
+    case "Color3Value":
+    case "BrickColorValue":
+      return new vscode.ThemeIcon("symbol-color");
     case "LocalizationTable":
       return new vscode.ThemeIcon("table");
     default:

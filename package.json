@@ -58,6 +58,8 @@
     "onCommand:rojoExplorer.createObjectValue",
     "onCommand:rojoExplorer.createVector3Value",
     "onCommand:rojoExplorer.createCFrameValue",
+    "onCommand:rojoExplorer.createColor3Value",
+    "onCommand:rojoExplorer.createBrickColorValue",
     "onCommand:rojoExplorer.createLocalizationTable",
     "onCommand:rojoExplorer.createJsonModule",
     "onCommand:rojoExplorer.createTomlModule",
@@ -211,6 +213,16 @@
         "command": "rojoExplorer.createCFrameValue",
         "title": "%rojoExplorer.commands.createCFrameValue.title%",
         "icon": "$(symbol-operator)"
+      },
+      {
+        "command": "rojoExplorer.createColor3Value",
+        "title": "%rojoExplorer.commands.createColor3Value.title%",
+        "icon": "$(symbol-color)"
+      },
+      {
+        "command": "rojoExplorer.createBrickColorValue",
+        "title": "%rojoExplorer.commands.createBrickColorValue.title%",
+        "icon": "$(symbol-color)"
       },
       {
         "command": "rojoExplorer.createLocalizationTable",
@@ -438,19 +450,29 @@
           "group": "resource-create@18"
         },
         {
-          "command": "rojoExplorer.createLocalizationTable",
+          "command": "rojoExplorer.createColor3Value",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@19"
         },
         {
-          "command": "rojoExplorer.createJsonModule",
+          "command": "rojoExplorer.createBrickColorValue",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@20"
         },
         {
-          "command": "rojoExplorer.createTomlModule",
+          "command": "rojoExplorer.createLocalizationTable",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@21"
+        },
+        {
+          "command": "rojoExplorer.createJsonModule",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@22"
+        },
+        {
+          "command": "rojoExplorer.createTomlModule",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@23"
         }
       ]
     },

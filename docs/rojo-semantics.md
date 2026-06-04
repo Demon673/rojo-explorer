@@ -12,6 +12,8 @@ This file is the implementation contract for Rojo Explorer's Rojo project model 
 - Roblox Creator Hub ObjectValue class reference: https://create.roblox.com/docs/reference/engine/classes/ObjectValue
 - Roblox Creator Hub Vector3Value class reference: https://create.roblox.com/docs/reference/engine/classes/Vector3Value
 - Roblox Creator Hub CFrameValue class reference: https://create.roblox.com/docs/reference/engine/classes/CFrameValue
+- Roblox Creator Hub Color3Value class reference: https://create.roblox.com/docs/reference/engine/classes/Color3Value
+- Roblox Creator Hub BrickColorValue class reference: https://create.roblox.com/docs/reference/engine/classes/BrickColorValue
 
 ## Model Scope
 
@@ -57,6 +59,7 @@ Rojo Explorer builds a Studio-style resource tree from `*.project.json` files an
 - Filesystem-backed BindableFunction creation creates a directory plus `init.meta.json` with `className` set to `BindableFunction`; it does not generate binary Roblox assets.
 - Filesystem-backed BoolValue, IntValue, and NumberValue creation creates a directory plus `init.meta.json` with `className` set to the selected value class; it does not write initial `Value` properties.
 - Filesystem-backed ObjectValue, Vector3Value, and CFrameValue creation creates a directory plus `init.meta.json` with `className` set to the selected value class; it does not write initial `Value` properties.
+- Filesystem-backed Color3Value and BrickColorValue creation creates a directory plus `init.meta.json` with `className` set to the selected value class; it does not write initial `Value` properties.
 - Supported meta-backed directory creation commands share one planner path so every supported class creates the same directory plus `init.meta.json` structure.
 - Generic `New Instance...` creation is limited to the same supported meta-backed directory classes; v1 does not accept arbitrary className input.
 - Filesystem-backed JSON Module creation creates a plain `.json` file with `{}` content; it does not create `.model.json` or `.project.json` files.

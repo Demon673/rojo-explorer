@@ -54,6 +54,8 @@
   "ObjectValue": "ObjectValue",
   "Vector3Value": "Vector3Value",
   "CFrameValue": "CFrameValue",
+  "Color3Value": "Color3Value",
+  "BrickColorValue": "BrickColorValue",
   "LocalizationTable": "LocalizationTable",
   "JSON Module": "JSON Module",
   "TOML Module": "TOML Module",
