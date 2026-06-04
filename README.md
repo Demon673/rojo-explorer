@@ -22,6 +22,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Provides Simplified Chinese localization for VS Code users running the `zh-cn` display language.
 - Creates new Rojo-backed folders, scripts, local scripts, and module scripts under filesystem-backed folder resources.
 - Renames Rojo-backed filesystem resources while preserving file suffix semantics and sibling `.meta.json` files.
+- Duplicates Rojo-backed filesystem resources while preserving file suffix semantics and sibling `.meta.json` files.
 - Moves Rojo-backed filesystem resources between filesystem-backed folder resources after conflict checks.
 - Moves Rojo-backed filesystem resources by dragging them onto filesystem-backed folder resources.
 - Deletes Rojo-backed filesystem resources after confirmation, using the OS trash when available.
@@ -29,7 +30,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Edits project mapping Studio names by renaming the corresponding key in `.project.json` without moving the mapped source path.
 - Edits project mapping source paths by updating `$path` values in `.project.json` after validating the selected source path.
 
-Resource management is intentionally narrow: creation works under mapped directories, filesystem rename, move, and delete work only for filesystem-discovered resources, and project mapping edits change only Studio names or `$path` values defined in project files. These paths check for generated path, sibling mapping, selected source path, or source existence conflicts.
+Resource management is intentionally narrow: creation works under mapped directories, filesystem rename, duplicate, move, and delete work only for filesystem-discovered resources, and project mapping edits change only Studio names or `$path` values defined in project files. These paths check for generated path, sibling mapping, selected source path, or source existence conflicts.
 
 Rojo Explorer does not automatically edit project mappings, build, serve, or sync resources.
 

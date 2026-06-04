@@ -2,6 +2,12 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.8.0 - Unreleased
+
+- Add a safe duplicate command for filesystem-discovered Rojo resources.
+- Preserve Rojo file suffixes and sibling `.meta.json` files during duplicate planning.
+- Keep project-controlled resources out of filesystem duplicate operations.
+
 ## 0.7.0 - Unreleased
 
 - Add tree drag-and-drop support for moving filesystem-discovered Rojo resources onto filesystem-backed folder resources.

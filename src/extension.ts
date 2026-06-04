@@ -9,6 +9,7 @@ import { planProjectMappingRename, ProjectMappingRenameFailureReason } from "./p
 import { createRenameInputOptions } from "./renameInputOptions";
 import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
 import { planResourceDeletion, ResourceDeletionFailureReason } from "./resourceDeletion";
+import { planResourceDuplicate, ResourceDuplicateFailureReason } from "./resourceDuplicate";
 import { planResourceMove, ResourceMoveFailureReason, ResourceMovePlan } from "./resourceMove";
 import { planResourceRename, ResourceRenameFailureReason } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
@@ -96,6 +97,9 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand("rojoExplorer.renameResource", (node?: ExplorerNode) =>
       renameResource(provider, fileSystem, node),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.duplicateResource", (node?: ExplorerNode) =>
+      duplicateResource(provider, fileSystem, node),
     ),
     vscode.commands.registerCommand("rojoExplorer.moveResource", (node?: ExplorerNode) =>
       moveResource(provider, fileSystem, node),
@@ -187,6 +191,62 @@ async function createResource(
 
   if (result.plan.entryType === "file") {
     await openTextDocument(targetUri);
+  }
+}
+
+async function duplicateResource(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+): Promise<void> {
+  const source = node?.instance?.source;
+  if (!provider.canDuplicateResource(node) || !node?.instance || !source?.entryType) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("This resource cannot be duplicated safely yet."));
+    return;
+  }
+
+  const result = await planResourceDuplicate(
+    {
+      sourcePath: source.fsPath,
+      sourceKind: source.kind,
+      entryType: source.entryType,
+      currentResourceName: node.instance.name,
+    },
+    fileSystem,
+  );
+
+  if (!result.ok) {
+    void vscode.window.showWarningMessage(localizeDuplicateFailure(result.reason, result.targetPath));
+    return;
+  }
+
+  const duplicateAction = vscode.l10n.t("Duplicate");
+  const confirmation = await vscode.window.showWarningMessage(
+    vscode.l10n.t("Duplicate {0} as {1}?", result.plan.currentResourceName, result.plan.newResourceName),
+    {
+      modal: true,
+      detail: result.plan.copies.map((copy) => `${copy.sourcePath} -> ${copy.targetPath}`).join("\n"),
+    },
+    duplicateAction,
+  );
+  if (confirmation !== duplicateAction) {
+    return;
+  }
+
+  for (const copy of result.plan.copies) {
+    await vscode.workspace.fs.copy(vscode.Uri.file(copy.sourcePath), vscode.Uri.file(copy.targetPath), {
+      overwrite: false,
+    });
+  }
+
+  provider.refresh();
+  void vscode.window.showInformationMessage(
+    vscode.l10n.t("Duplicated {0} as {1}", result.plan.currentResourceName, result.plan.newResourceName),
+  );
+
+  const primaryCopy = result.plan.copies.find((copy) => copy.role === "resource");
+  if (primaryCopy?.entryType === "file") {
+    await openTextDocument(vscode.Uri.file(primaryCopy.targetPath));
   }
 }
 
@@ -630,6 +690,25 @@ function localizeDeletionFailure(reason: ResourceDeletionFailureReason, targetPa
         : vscode.l10n.t("Source path does not exist.");
     case "unsupportedResource":
       return vscode.l10n.t("This resource cannot be deleted safely yet.");
+  }
+}
+
+function localizeDuplicateFailure(reason: ResourceDuplicateFailureReason, targetPath: string | undefined): string {
+  switch (reason) {
+    case "sourceNotFound":
+      return targetPath
+        ? vscode.l10n.t("Source path does not exist: {0}", targetPath)
+        : vscode.l10n.t("Source path does not exist.");
+    case "unsupportedResource":
+      return vscode.l10n.t("This resource cannot be duplicated safely yet.");
+    case "targetExists":
+      return targetPath
+        ? vscode.l10n.t("A resource with that Rojo name already exists: {0}", targetPath)
+        : vscode.l10n.t("A resource with that Rojo name already exists.");
+    case "noAvailableName":
+      return targetPath
+        ? vscode.l10n.t("No available duplicate resource name was found near: {0}", targetPath)
+        : vscode.l10n.t("No available duplicate resource name was found.");
   }
 }
 
