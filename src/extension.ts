@@ -146,6 +146,15 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.createStringValue", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "StringValue"),
     ),
+    vscode.commands.registerCommand("rojoExplorer.createBoolValue", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "BoolValue"),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.createIntValue", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "IntValue"),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.createNumberValue", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "NumberValue"),
+    ),
     vscode.commands.registerCommand("rojoExplorer.createLocalizationTable", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "LocalizationTable"),
     ),
@@ -973,6 +982,12 @@ function localizeResourceKind(kind: CreatableResourceKind): string {
       return vscode.l10n.t("BindableFunction");
     case "StringValue":
       return vscode.l10n.t("StringValue");
+    case "BoolValue":
+      return vscode.l10n.t("BoolValue");
+    case "IntValue":
+      return vscode.l10n.t("IntValue");
+    case "NumberValue":
+      return vscode.l10n.t("NumberValue");
     case "LocalizationTable":
       return vscode.l10n.t("LocalizationTable");
     case "JSONModule":

@@ -16,7 +16,10 @@ export type MetaBackedDirectoryResourceKind =
   | "RemoteEvent"
   | "RemoteFunction"
   | "BindableEvent"
-  | "BindableFunction";
+  | "BindableFunction"
+  | "BoolValue"
+  | "IntValue"
+  | "NumberValue";
 
 export type FileBackedResourceKind = "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule";
 
@@ -46,6 +49,9 @@ const metaBackedDirectoryResourceClassNames = {
   RemoteFunction: "RemoteFunction",
   BindableEvent: "BindableEvent",
   BindableFunction: "BindableFunction",
+  BoolValue: "BoolValue",
+  IntValue: "IntValue",
+  NumberValue: "NumberValue",
 } satisfies Record<MetaBackedDirectoryResourceKind, string>;
 
 const fileBackedResourceDefinitions = {

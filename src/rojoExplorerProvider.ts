@@ -626,6 +626,11 @@ function iconForClassName(className: string): vscode.ThemeIcon {
       return new vscode.ThemeIcon("symbol-method");
     case "StringValue":
       return new vscode.ThemeIcon("symbol-string");
+    case "BoolValue":
+      return new vscode.ThemeIcon("symbol-boolean");
+    case "IntValue":
+    case "NumberValue":
+      return new vscode.ThemeIcon("symbol-number");
     case "LocalizationTable":
       return new vscode.ThemeIcon("table");
     default:

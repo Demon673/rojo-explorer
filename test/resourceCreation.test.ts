@@ -46,6 +46,9 @@ describe("resource creation planning", () => {
       { kind: "RemoteFunction", resourceName: "GetRoundState", className: "RemoteFunction" },
       { kind: "BindableEvent", resourceName: "RoundChanged", className: "BindableEvent" },
       { kind: "BindableFunction", resourceName: "GetLocalRoundState", className: "BindableFunction" },
+      { kind: "BoolValue", resourceName: "IsRoundActive", className: "BoolValue" },
+      { kind: "IntValue", resourceName: "RoundCount", className: "IntValue" },
+      { kind: "NumberValue", resourceName: "RoundTime", className: "NumberValue" },
     ];
 
     for (const { kind, resourceName, className } of cases) {
@@ -83,6 +86,9 @@ describe("resource creation planning", () => {
       "RemoteFunction",
       "BindableEvent",
       "BindableFunction",
+      "BoolValue",
+      "IntValue",
+      "NumberValue",
     ]);
   });
 

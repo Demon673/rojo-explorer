@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.27.0 - Unreleased
+
+- Add `New BoolValue`, `New IntValue`, and `New NumberValue` commands.
+- Create these value objects as Rojo directories with `init.meta.json` className metadata.
+
 ## 0.26.0 - Unreleased
 
 - Allow init-backed Script, LocalScript, and ModuleScript resources to accept child creation and move/drop targets.
