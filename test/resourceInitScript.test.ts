@@ -1,7 +1,12 @@
 import * as path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { getInitScriptResourceKinds, planResourceInitScript } from "../src/resourceInitScript";
+import {
+  canRemoveInitScriptSourceKind,
+  getInitScriptResourceKinds,
+  planResourceInitScript,
+  planResourceRemoveInitScript,
+} from "../src/resourceInitScript";
 
 describe("resource init script planning", () => {
   it("creates init Script, LocalScript, and ModuleScript files", async () => {
@@ -62,6 +67,69 @@ describe("resource init script planning", () => {
     if (!result.ok) {
       expect(result.reason).toBe("targetExists");
       expect(result.targetPath).toBe(targetPath);
+    }
+  });
+
+  it("removes only the init script file from init-backed resources", async () => {
+    const sourcePath = path.join(folderPath, "init.server.lua");
+    const result = await planResourceRemoveInitScript(
+      {
+        sourcePath,
+        sourceKind: "initScript",
+        entryType: "file",
+        currentResourceName: "Controller",
+      },
+      fsWithExistingFiles([sourcePath], [folderPath]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        currentResourceName: "Controller",
+        targetPath: sourcePath,
+        recursive: false,
+      },
+    });
+  });
+
+  it("rejects non-init-backed resources when removing init scripts", async () => {
+    expect(canRemoveInitScriptSourceKind("initScript")).toBe(true);
+
+    for (const sourceKind of ["directory", "script", "projectTree"] as const) {
+      expect(canRemoveInitScriptSourceKind(sourceKind)).toBe(false);
+      const result = await planResourceRemoveInitScript(
+        {
+          sourcePath: path.join(folderPath, "init.lua"),
+          sourceKind,
+          entryType: sourceKind === "directory" ? "directory" : "file",
+          currentResourceName: "Controller",
+        },
+        fsWithExistingFiles([path.join(folderPath, "init.lua")], [folderPath]),
+      );
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.reason).toBe("unsupportedResource");
+      }
+    }
+  });
+
+  it("rejects missing init script source paths when removing init scripts", async () => {
+    const sourcePath = path.join(folderPath, "init.lua");
+    const result = await planResourceRemoveInitScript(
+      {
+        sourcePath,
+        sourceKind: "initScript",
+        entryType: "file",
+        currentResourceName: "Controller",
+      },
+      fsWithExistingFiles([], [folderPath]),
+    );
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toBe("sourceNotFound");
+      expect(result.targetPath).toBe(sourcePath);
     }
   });
 });

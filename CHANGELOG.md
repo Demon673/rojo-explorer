@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.25.0 - Unreleased
+
+- Add a `Remove Init Script...` command for init-backed filesystem resources.
+- Remove only the `init.*.lua` source file so the containing directory and children remain intact.
+
 ## 0.24.0 - Unreleased
 
 - Add a `Create Init Script...` command for filesystem-discovered Folder resources.

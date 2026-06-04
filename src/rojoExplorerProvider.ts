@@ -18,6 +18,7 @@ import {
 import { canDeleteSourceKind } from "./resourceDeletion";
 import { canDuplicateSourceKind } from "./resourceDuplicate";
 import { canEditInitMetaSourceKind } from "./resourceInitMeta";
+import { canRemoveInitScriptSourceKind } from "./resourceInitScript";
 import { canEditMetaSourceKind } from "./resourceMeta";
 import { canMoveSourceKind } from "./resourceMove";
 import { canRenameSourceKind } from "./resourceRename";
@@ -89,6 +90,15 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
       && source.entryType === "directory"
       && node.instance?.className === "Folder",
     );
+  }
+
+  canRemoveInitScript(node?: ExplorerNode): boolean {
+    const source = node?.instance?.source;
+    if (node?.kind !== "instance" || !node.resourceUri || !source?.exists || !source.entryType) {
+      return false;
+    }
+
+    return canRemoveInitScriptSourceKind(source.kind);
   }
 
   canRenameResource(node?: ExplorerNode): boolean {
@@ -229,6 +239,9 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     }
     if (this.canCreateInitScript(node)) {
       item.contextValue += ".initScriptCreatable";
+    }
+    if (this.canRemoveInitScript(node)) {
+      item.contextValue += ".initScriptRemovable";
     }
     if (this.canRenameResource(node)) {
       item.contextValue += ".renameable";

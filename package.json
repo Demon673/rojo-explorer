@@ -44,6 +44,7 @@
     "onCommand:rojoExplorer.createLocalScript",
     "onCommand:rojoExplorer.createModuleScript",
     "onCommand:rojoExplorer.createInitScript",
+    "onCommand:rojoExplorer.removeInitScript",
     "onCommand:rojoExplorer.createInstance",
     "onCommand:rojoExplorer.createModel",
     "onCommand:rojoExplorer.createRemoteEvent",
@@ -134,6 +135,11 @@
         "command": "rojoExplorer.createInitScript",
         "title": "%rojoExplorer.commands.createInitScript.title%",
         "icon": "$(file-code)"
+      },
+      {
+        "command": "rojoExplorer.removeInitScript",
+        "title": "%rojoExplorer.commands.removeInitScript.title%",
+        "icon": "$(close)"
       },
       {
         "command": "rojoExplorer.createInstance",
@@ -291,14 +297,19 @@
           "group": "resource-edit@5"
         },
         {
+          "command": "rojoExplorer.removeInitScript",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /initScriptRemovable/",
+          "group": "resource-edit@6"
+        },
+        {
           "command": "rojoExplorer.editProjectMapping",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /projectControlled/",
-          "group": "resource-edit@6"
+          "group": "resource-edit@7"
         },
         {
           "command": "rojoExplorer.deleteResource",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /deletable/",
-          "group": "resource-edit@7"
+          "group": "resource-edit@8"
         },
         {
           "command": "rojoExplorer.createFolder",

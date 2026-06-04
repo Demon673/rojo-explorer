@@ -15,6 +15,7 @@
   "rojoExplorer.commands.createLocalScript.title": "New LocalScript",
   "rojoExplorer.commands.createModuleScript.title": "New ModuleScript",
   "rojoExplorer.commands.createInitScript.title": "Create Init Script...",
+  "rojoExplorer.commands.removeInitScript.title": "Remove Init Script...",
   "rojoExplorer.commands.createInstance.title": "New Instance...",
   "rojoExplorer.commands.createModel.title": "New Model",
   "rojoExplorer.commands.createRemoteEvent.title": "New RemoteEvent",

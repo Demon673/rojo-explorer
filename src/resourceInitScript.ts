@@ -1,6 +1,6 @@
 import * as path from "node:path";
 
-import { RojoFileSystem } from "./domain";
+import { RojoFileSystem, RojoFsEntryType, RojoSourceKind } from "./domain";
 import { inferFileRule } from "./domain/rojoSyncRules";
 import { type ScriptResourceKind } from "./resourceCreation";
 
@@ -51,6 +51,33 @@ export interface ResourceInitScriptFailure {
   targetPath?: string;
 }
 
+export interface ResourceRemoveInitScriptRequest {
+  sourcePath: string;
+  sourceKind: RojoSourceKind;
+  entryType: RojoFsEntryType;
+  currentResourceName: string;
+}
+
+export interface ResourceRemoveInitScriptPlan {
+  currentResourceName: string;
+  targetPath: string;
+  recursive: boolean;
+}
+
+export interface ResourceRemoveInitScriptResult {
+  ok: true;
+  plan: ResourceRemoveInitScriptPlan;
+}
+
+export type ResourceRemoveInitScriptFailureReason = "sourceNotFound" | "unsupportedResource";
+
+export interface ResourceRemoveInitScriptFailure {
+  ok: false;
+  reason: ResourceRemoveInitScriptFailureReason;
+  message: string;
+  targetPath?: string;
+}
+
 export async function planResourceInitScript(
   request: ResourceInitScriptRequest,
   fs: Pick<RojoFileSystem, "readDirectory" | "stat">,
@@ -97,6 +124,42 @@ export async function planResourceInitScript(
 
 export function getInitScriptResourceKinds(): InitScriptResourceKind[] {
   return Object.keys(initScriptDefinitions) as InitScriptResourceKind[];
+}
+
+export function canRemoveInitScriptSourceKind(kind: RojoSourceKind): boolean {
+  return kind === "initScript";
+}
+
+export async function planResourceRemoveInitScript(
+  request: ResourceRemoveInitScriptRequest,
+  fs: Pick<RojoFileSystem, "stat">,
+): Promise<ResourceRemoveInitScriptResult | ResourceRemoveInitScriptFailure> {
+  if (!canRemoveInitScriptSourceKind(request.sourceKind) || request.entryType !== "file") {
+    return {
+      ok: false,
+      reason: "unsupportedResource",
+      message: "This resource is not backed by an init script.",
+    };
+  }
+
+  const sourceType = await fs.stat(request.sourcePath);
+  if (sourceType !== "file") {
+    return {
+      ok: false,
+      reason: "sourceNotFound",
+      message: "Init script source path does not exist.",
+      targetPath: request.sourcePath,
+    };
+  }
+
+  return {
+    ok: true,
+    plan: {
+      currentResourceName: request.currentResourceName,
+      targetPath: request.sourcePath,
+      recursive: false,
+    },
+  };
 }
 
 async function findExistingInitScript(

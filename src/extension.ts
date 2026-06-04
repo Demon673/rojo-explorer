@@ -19,8 +19,10 @@ import { planResourceInitMeta, ResourceInitMetaFailureReason } from "./resourceI
 import {
   getInitScriptResourceKinds,
   planResourceInitScript,
+  planResourceRemoveInitScript,
   type InitScriptResourceKind,
   type ResourceInitScriptFailureReason,
+  type ResourceRemoveInitScriptFailureReason,
 } from "./resourceInitScript";
 import { planResourceMeta, ResourceMetaFailureReason } from "./resourceMeta";
 import { planResourceMove, ResourceMoveFailureReason, ResourceMovePlan } from "./resourceMove";
@@ -119,6 +121,9 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand("rojoExplorer.createInitScript", (node?: ExplorerNode) =>
       createInitScript(provider, fileSystem, node),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.removeInitScript", (node?: ExplorerNode) =>
+      removeInitScript(provider, fileSystem, node),
     ),
     vscode.commands.registerCommand("rojoExplorer.createInstance", (node?: ExplorerNode) =>
       createInstance(provider, fileSystem, node),
@@ -292,6 +297,54 @@ function getInitScriptFileName(kind: InitScriptResourceKind): string {
     case "ModuleScript":
       return "init.lua";
   }
+}
+
+async function removeInitScript(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+): Promise<void> {
+  const source = node?.instance?.source;
+  if (!provider.canRemoveInitScript(node) || !node?.instance || !source?.entryType) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("Select an init-backed filesystem resource first."));
+    return;
+  }
+
+  const result = await planResourceRemoveInitScript(
+    {
+      sourcePath: source.fsPath,
+      sourceKind: source.kind,
+      entryType: source.entryType,
+      currentResourceName: node.instance.name,
+    },
+    fileSystem,
+  );
+
+  if (!result.ok) {
+    void vscode.window.showWarningMessage(localizeRemoveInitScriptFailure(result.reason, result.targetPath));
+    return;
+  }
+
+  const removeAction = vscode.l10n.t("Remove Init Script");
+  const confirmation = await vscode.window.showWarningMessage(
+    vscode.l10n.t("Remove init script from {0}?", result.plan.currentResourceName),
+    {
+      modal: true,
+      detail: result.plan.targetPath,
+    },
+    removeAction,
+  );
+  if (confirmation !== removeAction) {
+    return;
+  }
+
+  await vscode.workspace.fs.delete(vscode.Uri.file(result.plan.targetPath), {
+    recursive: result.plan.recursive,
+    useTrash: true,
+  });
+
+  provider.refresh();
+  void vscode.window.showInformationMessage(vscode.l10n.t("Removed init script from {0}", result.plan.currentResourceName));
 }
 
 async function createResource(
@@ -948,6 +1001,17 @@ function localizeInitScriptFailure(reason: ResourceInitScriptFailureReason, targ
       return targetPath
         ? vscode.l10n.t("The init script target path already exists: {0}", targetPath)
         : vscode.l10n.t("The init script target path already exists.");
+  }
+}
+
+function localizeRemoveInitScriptFailure(reason: ResourceRemoveInitScriptFailureReason, targetPath: string | undefined): string {
+  switch (reason) {
+    case "sourceNotFound":
+      return targetPath
+        ? vscode.l10n.t("Init script source path does not exist: {0}", targetPath)
+        : vscode.l10n.t("Init script source path does not exist.");
+    case "unsupportedResource":
+      return vscode.l10n.t("This resource is not backed by an init script.");
   }
 }
 
