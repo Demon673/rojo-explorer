@@ -44,6 +44,7 @@
     "onCommand:rojoExplorer.createModuleScript",
     "onCommand:rojoExplorer.renameResource",
     "onCommand:rojoExplorer.duplicateResource",
+    "onCommand:rojoExplorer.openResourceMeta",
     "onCommand:rojoExplorer.moveResource",
     "onCommand:rojoExplorer.deleteResource",
     "onCommand:rojoExplorer.editProjectMapping",
@@ -122,6 +123,11 @@
         "icon": "$(copy)"
       },
       {
+        "command": "rojoExplorer.openResourceMeta",
+        "title": "%rojoExplorer.commands.openResourceMeta.title%",
+        "icon": "$(json)"
+      },
+      {
         "command": "rojoExplorer.moveResource",
         "title": "%rojoExplorer.commands.moveResource.title%",
         "icon": "$(arrow-right)"
@@ -192,14 +198,19 @@
           "group": "resource-edit@3"
         },
         {
+          "command": "rojoExplorer.openResourceMeta",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /metaEditable/",
+          "group": "resource-edit@4"
+        },
+        {
           "command": "rojoExplorer.editProjectMapping",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /projectControlled/",
-          "group": "resource-edit@4"
+          "group": "resource-edit@5"
         },
         {
           "command": "rojoExplorer.deleteResource",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /deletable/",
-          "group": "resource-edit@5"
+          "group": "resource-edit@6"
         },
         {
           "command": "rojoExplorer.createFolder",

@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.9.0 - Unreleased
+
+- Add an action to open or create sidecar `.meta.json` files for filesystem-discovered resources.
+- Keep project-controlled resources out of filesystem meta file creation.
+
 ## 0.8.0 - Unreleased
 
 - Add a safe duplicate command for filesystem-discovered Rojo resources.

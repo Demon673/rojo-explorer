@@ -17,6 +17,7 @@ import {
 } from "./projectControlledResources";
 import { canDeleteSourceKind } from "./resourceDeletion";
 import { canDuplicateSourceKind } from "./resourceDuplicate";
+import { canEditMetaSourceKind } from "./resourceMeta";
 import { canMoveSourceKind } from "./resourceMove";
 import { canRenameSourceKind } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
@@ -119,6 +120,15 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     return canDuplicateSourceKind(source.kind);
   }
 
+  canEditResourceMeta(node?: ExplorerNode): boolean {
+    const source = node?.instance?.source;
+    if (node?.kind !== "instance" || !node.resourceUri || !source?.exists || !source.entryType) {
+      return false;
+    }
+
+    return canEditMetaSourceKind(source.kind);
+  }
+
   canEditProjectMapping(node?: ExplorerNode): boolean {
     return this.getProjectMappingUri(node) !== undefined;
   }
@@ -191,6 +201,9 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     }
     if (this.canDeleteResource(node)) {
       item.contextValue += ".deletable";
+    }
+    if (this.canEditResourceMeta(node)) {
+      item.contextValue += ".metaEditable";
     }
     if (this.canEditProjectMapping(node)) {
       item.contextValue += ".projectControlled";

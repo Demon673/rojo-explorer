@@ -10,6 +10,7 @@ import { createRenameInputOptions } from "./renameInputOptions";
 import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
 import { planResourceDeletion, ResourceDeletionFailureReason } from "./resourceDeletion";
 import { planResourceDuplicate, ResourceDuplicateFailureReason } from "./resourceDuplicate";
+import { planResourceMeta, ResourceMetaFailureReason } from "./resourceMeta";
 import { planResourceMove, ResourceMoveFailureReason, ResourceMovePlan } from "./resourceMove";
 import { planResourceRename, ResourceRenameFailureReason } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
@@ -100,6 +101,9 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand("rojoExplorer.duplicateResource", (node?: ExplorerNode) =>
       duplicateResource(provider, fileSystem, node),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.openResourceMeta", (node?: ExplorerNode) =>
+      openResourceMeta(provider, fileSystem, node),
     ),
     vscode.commands.registerCommand("rojoExplorer.moveResource", (node?: ExplorerNode) =>
       moveResource(provider, fileSystem, node),
@@ -192,6 +196,42 @@ async function createResource(
   if (result.plan.entryType === "file") {
     await openTextDocument(targetUri);
   }
+}
+
+async function openResourceMeta(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+): Promise<void> {
+  const source = node?.instance?.source;
+  if (!provider.canEditResourceMeta(node) || !node?.instance || !source?.entryType) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("This resource metadata cannot be edited safely yet."));
+    return;
+  }
+
+  const result = await planResourceMeta(
+    {
+      sourcePath: source.fsPath,
+      sourceKind: source.kind,
+      entryType: source.entryType,
+      currentResourceName: node.instance.name,
+    },
+    fileSystem,
+  );
+
+  if (!result.ok) {
+    void vscode.window.showWarningMessage(localizeMetaFailure(result.reason, result.targetPath));
+    return;
+  }
+
+  const metaUri = vscode.Uri.file(result.plan.metaPath);
+  if (!result.plan.exists) {
+    await vscode.workspace.fs.writeFile(metaUri, Buffer.from(result.plan.content ?? "{}\n", "utf8"));
+    provider.refresh();
+    void vscode.window.showInformationMessage(vscode.l10n.t("Created meta file for {0}", result.plan.currentResourceName));
+  }
+
+  await openTextDocument(metaUri);
 }
 
 async function duplicateResource(
@@ -709,6 +749,21 @@ function localizeDuplicateFailure(reason: ResourceDuplicateFailureReason, target
       return targetPath
         ? vscode.l10n.t("No available duplicate resource name was found near: {0}", targetPath)
         : vscode.l10n.t("No available duplicate resource name was found.");
+  }
+}
+
+function localizeMetaFailure(reason: ResourceMetaFailureReason, targetPath: string | undefined): string {
+  switch (reason) {
+    case "sourceNotFound":
+      return targetPath
+        ? vscode.l10n.t("Source path does not exist: {0}", targetPath)
+        : vscode.l10n.t("Source path does not exist.");
+    case "unsupportedResource":
+      return vscode.l10n.t("This resource metadata cannot be edited safely yet.");
+    case "targetExists":
+      return targetPath
+        ? vscode.l10n.t("A directory already exists where the meta file would be created: {0}", targetPath)
+        : vscode.l10n.t("A directory already exists where the meta file would be created.");
   }
 }
 
