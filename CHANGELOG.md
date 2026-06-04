@@ -2,6 +2,12 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.4.0 - Unreleased
+
+- Add a safe delete command for filesystem-discovered Rojo resources.
+- Delete sibling `.meta.json` files with the resource to avoid orphan meta diagnostics.
+- Keep project-controlled resources out of filesystem delete operations.
+
 ## 0.3.0 - Unreleased
 
 - Add a resource rename command for filesystem-discovered Rojo resources.

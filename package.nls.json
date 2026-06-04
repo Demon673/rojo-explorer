@@ -14,6 +14,7 @@
   "rojoExplorer.commands.createLocalScript.title": "New LocalScript",
   "rojoExplorer.commands.createModuleScript.title": "New ModuleScript",
   "rojoExplorer.commands.renameResource.title": "Rename Resource",
+  "rojoExplorer.commands.deleteResource.title": "Delete Resource",
   "rojoExplorer.commands.editProjectMapping.title": "Edit Project Mapping...",
   "rojoExplorer.views.explorer.name": "Rojo Explorer"
 }

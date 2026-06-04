@@ -15,6 +15,7 @@ import {
   getProjectMappingFilePath,
   ProjectControlBadge,
 } from "./projectControlledResources";
+import { canDeleteSourceKind } from "./resourceDeletion";
 import { canRenameSourceKind } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 import { findRojoProjectFiles } from "./vscodeRojoProjects";
@@ -89,6 +90,15 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     return canRenameSourceKind(source.kind);
   }
 
+  canDeleteResource(node?: ExplorerNode): boolean {
+    const source = node?.instance?.source;
+    if (node?.kind !== "instance" || !node.resourceUri || !source?.exists || !source.entryType) {
+      return false;
+    }
+
+    return canDeleteSourceKind(source.kind);
+  }
+
   canEditProjectMapping(node?: ExplorerNode): boolean {
     return this.getProjectMappingUri(node) !== undefined;
   }
@@ -125,6 +135,9 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     }
     if (this.canRenameResource(node)) {
       item.contextValue += ".renameable";
+    }
+    if (this.canDeleteResource(node)) {
+      item.contextValue += ".deletable";
     }
     if (this.canEditProjectMapping(node)) {
       item.contextValue += ".projectControlled";

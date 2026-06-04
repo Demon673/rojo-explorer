@@ -4,6 +4,7 @@ import { ExplorerNode, RojoExplorerProvider } from "./rojoExplorerProvider";
 import { planProjectMappingRename, ProjectMappingRenameFailureReason } from "./projectMappingRename";
 import { createRenameInputOptions } from "./renameInputOptions";
 import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
+import { planResourceDeletion, ResourceDeletionFailureReason } from "./resourceDeletion";
 import { planResourceRename, ResourceRenameFailureReason } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 
@@ -86,6 +87,9 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand("rojoExplorer.renameResource", (node?: ExplorerNode) =>
       renameResource(provider, fileSystem, node),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.deleteResource", (node?: ExplorerNode) =>
+      deleteResource(provider, fileSystem, node),
     ),
     vscode.commands.registerCommand("rojoExplorer.editProjectMapping", (node?: ExplorerNode) =>
       editProjectMapping(provider, node),
@@ -172,6 +176,56 @@ async function createResource(
   if (result.plan.entryType === "file") {
     await openTextDocument(targetUri);
   }
+}
+
+async function deleteResource(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  node: ExplorerNode | undefined,
+): Promise<void> {
+  const source = node?.instance?.source;
+  if (!provider.canDeleteResource(node) || !node?.instance || !source?.entryType) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("This resource cannot be deleted safely yet."));
+    return;
+  }
+
+  const result = await planResourceDeletion(
+    {
+      sourcePath: source.fsPath,
+      sourceKind: source.kind,
+      entryType: source.entryType,
+      currentResourceName: node.instance.name,
+    },
+    fileSystem,
+  );
+
+  if (!result.ok) {
+    void vscode.window.showWarningMessage(localizeDeletionFailure(result.reason, result.targetPath));
+    return;
+  }
+
+  const deleteAction = vscode.l10n.t("Delete");
+  const confirmation = await vscode.window.showWarningMessage(
+    createDeleteConfirmationMessage(result.plan.currentResourceName, result.plan.targets.length),
+    {
+      modal: true,
+      detail: result.plan.targets.map((target) => target.targetPath).join("\n"),
+    },
+    deleteAction,
+  );
+  if (confirmation !== deleteAction) {
+    return;
+  }
+
+  for (const target of result.plan.targets) {
+    await vscode.workspace.fs.delete(vscode.Uri.file(target.targetPath), {
+      recursive: target.recursive,
+      useTrash: true,
+    });
+  }
+
+  provider.refresh();
+  void vscode.window.showInformationMessage(vscode.l10n.t("Deleted {0}", result.plan.currentResourceName));
 }
 
 async function editProjectMapping(provider: RojoExplorerProvider, node: ExplorerNode | undefined): Promise<void> {
@@ -303,6 +357,12 @@ async function renameResource(
   }
 }
 
+function createDeleteConfirmationMessage(resourceName: string, targetCount: number): string {
+  return targetCount > 1
+    ? vscode.l10n.t("Delete {0} and {1} source items?", resourceName, targetCount)
+    : vscode.l10n.t("Delete {0}?", resourceName);
+}
+
 function localizeResourceKind(kind: CreatableResourceKind): string {
   switch (kind) {
     case "Folder":
@@ -326,6 +386,17 @@ function localizeCreationFailure(reason: "invalidName" | "parentNotDirectory" | 
       return targetPath
         ? vscode.l10n.t("A resource with that Rojo name already exists: {0}", targetPath)
         : vscode.l10n.t("A resource with that Rojo name already exists.");
+  }
+}
+
+function localizeDeletionFailure(reason: ResourceDeletionFailureReason, targetPath: string | undefined): string {
+  switch (reason) {
+    case "sourceNotFound":
+      return targetPath
+        ? vscode.l10n.t("Source path does not exist: {0}", targetPath)
+        : vscode.l10n.t("Source path does not exist.");
+    case "unsupportedResource":
+      return vscode.l10n.t("This resource cannot be deleted safely yet.");
   }
 }
 
