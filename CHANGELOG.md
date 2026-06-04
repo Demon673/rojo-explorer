@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.7.0 - Unreleased
+
+- Add tree drag-and-drop support for moving filesystem-discovered Rojo resources onto filesystem-backed folder resources.
+- Reuse the safe move planner for drag-and-drop moves so project-controlled resources and conflicts remain blocked.
+
 ## 0.6.0 - Unreleased
 
 - Add a project mapping source path edit action that updates `$path` values in `.project.json`.

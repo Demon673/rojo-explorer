@@ -23,6 +23,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Creates new Rojo-backed folders, scripts, local scripts, and module scripts under filesystem-backed folder resources.
 - Renames Rojo-backed filesystem resources while preserving file suffix semantics and sibling `.meta.json` files.
 - Moves Rojo-backed filesystem resources between filesystem-backed folder resources after conflict checks.
+- Moves Rojo-backed filesystem resources by dragging them onto filesystem-backed folder resources.
 - Deletes Rojo-backed filesystem resources after confirmation, using the OS trash when available.
 - Marks project-controlled resources, such as project file mappings and included projects.
 - Edits project mapping Studio names by renaming the corresponding key in `.project.json` without moving the mapped source path.

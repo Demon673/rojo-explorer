@@ -3,20 +3,25 @@ import * as path from "node:path";
 import * as vscode from "vscode";
 
 import { ExplorerNode, RojoExplorerProvider } from "./rojoExplorerProvider";
+import { RojoExplorerDragAndDropController } from "./rojoExplorerDragAndDrop";
 import { planProjectMappingPathEdit, ProjectMappingPathEditFailureReason } from "./projectMappingPathEdit";
 import { planProjectMappingRename, ProjectMappingRenameFailureReason } from "./projectMappingRename";
 import { createRenameInputOptions } from "./renameInputOptions";
 import { CreatableResourceKind, planResourceCreation } from "./resourceCreation";
 import { planResourceDeletion, ResourceDeletionFailureReason } from "./resourceDeletion";
-import { planResourceMove, ResourceMoveFailureReason } from "./resourceMove";
+import { planResourceMove, ResourceMoveFailureReason, ResourceMovePlan } from "./resourceMove";
 import { planResourceRename, ResourceRenameFailureReason } from "./resourceRename";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 
 export function activate(context: vscode.ExtensionContext): void {
   const provider = new RojoExplorerProvider(context);
   const fileSystem = new VscodeRojoFileSystem();
+  const dragAndDropController = new RojoExplorerDragAndDropController(provider, (sourceNodes, targetFolder) =>
+    moveResourcesToFolder(provider, fileSystem, sourceNodes, targetFolder),
+  );
   const treeView = vscode.window.createTreeView("rojoExplorer.views.explorer", {
     treeDataProvider: provider,
+    dragAndDropController,
     showCollapseAll: true,
   });
 
@@ -217,28 +222,73 @@ async function moveResource(
     return;
   }
 
-  const result = await planResourceMove(
-    {
-      sourcePath: source.fsPath,
-      sourceKind: source.kind,
-      entryType: source.entryType,
-      currentResourceName: node.instance.name,
-      targetDirectoryPath: selected.folder.resourceUri.fsPath,
-    },
-    fileSystem,
-  );
+  await moveResourcesToFolder(provider, fileSystem, [node], selected.folder, {
+    openSingleMovedFile: true,
+  });
+}
 
-  if (!result.ok) {
-    void vscode.window.showWarningMessage(localizeMoveFailure(result.reason, result.targetPath));
+interface PlannedResourceMove {
+  plan: ResourceMovePlan;
+}
+
+interface MoveResourcesToFolderOptions {
+  openSingleMovedFile?: boolean;
+}
+
+async function moveResourcesToFolder(
+  provider: RojoExplorerProvider,
+  fileSystem: VscodeRojoFileSystem,
+  sourceNodes: ExplorerNode[],
+  targetFolder: ExplorerNode,
+  options: MoveResourcesToFolderOptions = {},
+): Promise<void> {
+  if (!provider.canCreateChildren(targetFolder) || !targetFolder.resourceUri) {
+    void vscode.window.showWarningMessage(vscode.l10n.t("Drop resources onto a filesystem-backed folder resource."));
+    return;
+  }
+
+  const plannedMoves: PlannedResourceMove[] = [];
+  for (const sourceNode of dedupeMoveSourceNodes(sourceNodes)) {
+    const source = sourceNode.instance?.source;
+    if (!provider.canMoveResource(sourceNode) || !sourceNode.instance || !source?.entryType) {
+      void vscode.window.showWarningMessage(vscode.l10n.t("This resource cannot be moved safely yet."));
+      return;
+    }
+
+    const result = await planResourceMove(
+      {
+        sourcePath: source.fsPath,
+        sourceKind: source.kind,
+        entryType: source.entryType,
+        currentResourceName: sourceNode.instance.name,
+        targetDirectoryPath: targetFolder.resourceUri.fsPath,
+      },
+      fileSystem,
+    );
+
+    if (!result.ok) {
+      void vscode.window.showWarningMessage(localizeMoveFailure(result.reason, result.targetPath));
+      return;
+    }
+
+    plannedMoves.push({
+      plan: result.plan,
+    });
+  }
+
+  if (plannedMoves.length === 0) {
     return;
   }
 
   const moveAction = vscode.l10n.t("Move");
+  const targetLabel = targetFolder.studioPath ?? targetFolder.label;
   const confirmation = await vscode.window.showWarningMessage(
-    vscode.l10n.t("Move {0} to {1}?", result.plan.currentResourceName, selected.label),
+    createMoveConfirmationMessage(plannedMoves, targetLabel),
     {
       modal: true,
-      detail: result.plan.moves.map((move) => `${move.sourcePath} -> ${move.targetPath}`).join("\n"),
+      detail: plannedMoves.flatMap((move) =>
+        move.plan.moves.map((operation) => `${operation.sourcePath} -> ${operation.targetPath}`),
+      ).join("\n"),
     },
     moveAction,
   );
@@ -246,21 +296,48 @@ async function moveResource(
     return;
   }
 
-  for (const move of result.plan.moves) {
-    await vscode.workspace.fs.rename(vscode.Uri.file(move.sourcePath), vscode.Uri.file(move.targetPath), {
-      overwrite: false,
-    });
+  for (const plannedMove of plannedMoves) {
+    for (const move of plannedMove.plan.moves) {
+      await vscode.workspace.fs.rename(vscode.Uri.file(move.sourcePath), vscode.Uri.file(move.targetPath), {
+        overwrite: false,
+      });
+    }
   }
 
   provider.refresh();
-  void vscode.window.showInformationMessage(
-    vscode.l10n.t("Moved {0} to {1}", result.plan.currentResourceName, selected.label),
-  );
+  void vscode.window.showInformationMessage(createMovedMessage(plannedMoves, targetLabel));
 
-  const primaryMove = result.plan.moves.find((move) => move.role === "resource");
-  if (primaryMove?.entryType === "file") {
+  const primaryMove = plannedMoves.length === 1
+    ? plannedMoves[0].plan.moves.find((move) => move.role === "resource")
+    : undefined;
+  if (options.openSingleMovedFile && primaryMove?.entryType === "file") {
     await openTextDocument(vscode.Uri.file(primaryMove.targetPath));
   }
+}
+
+function dedupeMoveSourceNodes(sourceNodes: ExplorerNode[]): ExplorerNode[] {
+  const seen = new Set<string>();
+  return sourceNodes.filter((node) => {
+    const key = node.instance?.source?.fsPath ?? node.studioPath ?? node.label;
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
+
+function createMoveConfirmationMessage(plannedMoves: PlannedResourceMove[], targetLabel: string): string {
+  return plannedMoves.length === 1
+    ? vscode.l10n.t("Move {0} to {1}?", plannedMoves[0].plan.currentResourceName, targetLabel)
+    : vscode.l10n.t("Move {0} resources to {1}?", plannedMoves.length, targetLabel);
+}
+
+function createMovedMessage(plannedMoves: PlannedResourceMove[], targetLabel: string): string {
+  return plannedMoves.length === 1
+    ? vscode.l10n.t("Moved {0} to {1}", plannedMoves[0].plan.currentResourceName, targetLabel)
+    : vscode.l10n.t("Moved {0} resources to {1}", plannedMoves.length, targetLabel);
 }
 
 async function deleteResource(
