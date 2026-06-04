@@ -5,18 +5,67 @@ import { inferFileRule } from "./domain/rojoSyncRules";
 
 export type CreatableResourceKind =
   | "Folder"
-  | "Script"
-  | "LocalScript"
-  | "ModuleScript"
+  | ScriptResourceKind
+  | MetaBackedDirectoryResourceKind
+  | FileBackedResourceKind;
+
+export type ScriptResourceKind = "Script" | "LocalScript" | "ModuleScript";
+
+export type MetaBackedDirectoryResourceKind =
   | "Model"
   | "RemoteEvent"
   | "RemoteFunction"
   | "BindableEvent"
-  | "BindableFunction"
-  | "StringValue"
-  | "LocalizationTable"
-  | "JSONModule"
-  | "TOMLModule";
+  | "BindableFunction";
+
+export type FileBackedResourceKind = "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule";
+
+interface FileResourceDefinition {
+  suffix: string;
+  content: string;
+}
+
+const scriptResourceDefinitions = {
+  Script: {
+    suffix: ".server.lua",
+    content: "\n",
+  },
+  LocalScript: {
+    suffix: ".client.lua",
+    content: "\n",
+  },
+  ModuleScript: {
+    suffix: ".lua",
+    content: "return {}\n",
+  },
+} satisfies Record<ScriptResourceKind, FileResourceDefinition>;
+
+const metaBackedDirectoryResourceClassNames = {
+  Model: "Model",
+  RemoteEvent: "RemoteEvent",
+  RemoteFunction: "RemoteFunction",
+  BindableEvent: "BindableEvent",
+  BindableFunction: "BindableFunction",
+} satisfies Record<MetaBackedDirectoryResourceKind, string>;
+
+const fileBackedResourceDefinitions = {
+  StringValue: {
+    suffix: ".txt",
+    content: "",
+  },
+  LocalizationTable: {
+    suffix: ".csv",
+    content: "Key,Source,Context,Example\n",
+  },
+  JSONModule: {
+    suffix: ".json",
+    content: "{}\n",
+  },
+  TOMLModule: {
+    suffix: ".toml",
+    content: "",
+  },
+} satisfies Record<FileBackedResourceKind, FileResourceDefinition>;
 
 export interface ResourceCreationRequest {
   parentDirectoryPath: string;
@@ -112,94 +161,47 @@ async function findRojoNameConflict(
 }
 
 export function createPlan(parentDirectoryPath: string, resourceName: string, kind: CreatableResourceKind): ResourceCreationPlan {
-  switch (kind) {
-    case "Folder":
-      return {
-        kind,
-        resourceName,
-        targetPath: path.join(parentDirectoryPath, resourceName),
-        entryType: "directory",
-      };
-    case "Model":
-      return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "Model");
-    case "RemoteEvent":
-      return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "RemoteEvent");
-    case "RemoteFunction":
-      return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "RemoteFunction");
-    case "BindableEvent":
-      return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "BindableEvent");
-    case "BindableFunction":
-      return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, "BindableFunction");
-    case "StringValue":
-      return {
-        kind,
-        resourceName,
-        targetPath: path.join(parentDirectoryPath, `${resourceName}.txt`),
-        entryType: "file",
-        content: "",
-      };
-    case "LocalizationTable":
-      return {
-        kind,
-        resourceName,
-        targetPath: path.join(parentDirectoryPath, `${resourceName}.csv`),
-        entryType: "file",
-        content: "Key,Source,Context,Example\n",
-      };
-    case "JSONModule":
-      return {
-        kind,
-        resourceName,
-        targetPath: path.join(parentDirectoryPath, `${resourceName}.json`),
-        entryType: "file",
-        content: "{}\n",
-      };
-    case "TOMLModule":
-      return {
-        kind,
-        resourceName,
-        targetPath: path.join(parentDirectoryPath, `${resourceName}.toml`),
-        entryType: "file",
-        content: "",
-      };
-    case "Script":
-      return scriptPlan(parentDirectoryPath, resourceName, kind, ".server.lua");
-    case "LocalScript":
-      return scriptPlan(parentDirectoryPath, resourceName, kind, ".client.lua");
-    case "ModuleScript":
-      return scriptPlan(parentDirectoryPath, resourceName, kind, ".lua");
+  if (kind === "Folder") {
+    return {
+      kind,
+      resourceName,
+      targetPath: path.join(parentDirectoryPath, resourceName),
+      entryType: "directory",
+    };
   }
+
+  if (isMetaBackedDirectoryResourceKind(kind)) {
+    return metaBackedDirectoryPlan(parentDirectoryPath, resourceName, kind, metaBackedDirectoryResourceClassNames[kind]);
+  }
+
+  if (isScriptResourceKind(kind)) {
+    const definition = scriptResourceDefinitions[kind];
+    return filePlan(parentDirectoryPath, resourceName, kind, definition);
+  }
+
+  const definition = fileBackedResourceDefinitions[kind];
+  return filePlan(parentDirectoryPath, resourceName, kind, definition);
 }
 
-function scriptPlan(
+function filePlan(
   parentDirectoryPath: string,
   resourceName: string,
-  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "RemoteEvent" | "RemoteFunction" | "BindableEvent" | "BindableFunction" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
-  suffix: string,
+  kind: ScriptResourceKind | FileBackedResourceKind,
+  definition: FileResourceDefinition,
 ): ResourceCreationPlan {
   return {
     kind,
     resourceName,
-    targetPath: path.join(parentDirectoryPath, `${resourceName}${suffix}`),
+    targetPath: path.join(parentDirectoryPath, `${resourceName}${definition.suffix}`),
     entryType: "file",
-    content: defaultScriptContent(kind),
+    content: definition.content,
   };
-}
-
-function defaultScriptContent(
-  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "RemoteEvent" | "RemoteFunction" | "BindableEvent" | "BindableFunction" | "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule">,
-): string {
-  if (kind === "ModuleScript") {
-    return "return {}\n";
-  }
-
-  return "\n";
 }
 
 function metaBackedDirectoryPlan(
   parentDirectoryPath: string,
   resourceName: string,
-  kind: Extract<CreatableResourceKind, "Model" | "RemoteEvent" | "RemoteFunction" | "BindableEvent" | "BindableFunction">,
+  kind: MetaBackedDirectoryResourceKind,
   className: string,
 ): ResourceCreationPlan {
   const targetPath = path.join(parentDirectoryPath, resourceName);
@@ -219,4 +221,12 @@ function metaBackedDirectoryPlan(
 
 function isValidResourceName(name: string): boolean {
   return name.length > 0 && !name.includes("/") && !name.includes("\\");
+}
+
+function isScriptResourceKind(kind: CreatableResourceKind): kind is ScriptResourceKind {
+  return kind in scriptResourceDefinitions;
+}
+
+function isMetaBackedDirectoryResourceKind(kind: CreatableResourceKind): kind is MetaBackedDirectoryResourceKind {
+  return kind in metaBackedDirectoryResourceClassNames;
 }

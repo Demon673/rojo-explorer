@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.22.0 - Unreleased
+
+- Centralize meta-backed directory resource creation through one className definition registry.
+- Keep Model, RemoteEvent, RemoteFunction, BindableEvent, and BindableFunction creation behavior unchanged while reducing future command drift.
+
 ## 0.21.0 - Unreleased
 
 - Add a `New BindableFunction` command that creates a Rojo directory resource with `init.meta.json` className metadata.

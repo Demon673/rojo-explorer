@@ -1,7 +1,7 @@
 import * as path from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { planResourceCreation } from "../src/resourceCreation";
+import { planResourceCreation, type MetaBackedDirectoryResourceKind } from "../src/resourceCreation";
 
 describe("resource creation planning", () => {
   it("creates folders as directories", async () => {
@@ -31,139 +31,45 @@ describe("resource creation planning", () => {
     await expectPlannedScript("ModuleScript", "SharedModule.lua", "return {}\n");
   });
 
-  it("creates Models as directories with init.meta.json className", async () => {
-    const result = await planResourceCreation(
-      {
-        parentDirectoryPath: root,
-        resourceName: "Weapon",
-        kind: "Model",
-      },
-      fsWithExistingDirectories([root]),
-    );
+  it("creates meta-backed directory resources with init.meta.json className", async () => {
+    const cases: Array<{
+      kind: MetaBackedDirectoryResourceKind;
+      resourceName: string;
+      className: string;
+    }> = [
+      { kind: "Model", resourceName: "Weapon", className: "Model" },
+      { kind: "RemoteEvent", resourceName: "RoundStarted", className: "RemoteEvent" },
+      { kind: "RemoteFunction", resourceName: "GetRoundState", className: "RemoteFunction" },
+      { kind: "BindableEvent", resourceName: "RoundChanged", className: "BindableEvent" },
+      { kind: "BindableFunction", resourceName: "GetLocalRoundState", className: "BindableFunction" },
+    ];
 
-    expect(result).toEqual({
-      ok: true,
-      plan: {
-        kind: "Model",
-        resourceName: "Weapon",
-        targetPath: path.join(root, "Weapon"),
-        entryType: "directory",
-        additionalFiles: [
-          {
-            targetPath: path.join(root, "Weapon", "init.meta.json"),
-            content: "{\n  \"className\": \"Model\"\n}\n",
-          },
-        ],
-      },
-    });
-  });
+    for (const { kind, resourceName, className } of cases) {
+      const result = await planResourceCreation(
+        {
+          parentDirectoryPath: root,
+          resourceName,
+          kind,
+        },
+        fsWithExistingDirectories([root]),
+      );
 
-  it("creates RemoteEvents as directories with init.meta.json className", async () => {
-    const result = await planResourceCreation(
-      {
-        parentDirectoryPath: root,
-        resourceName: "RoundStarted",
-        kind: "RemoteEvent",
-      },
-      fsWithExistingDirectories([root]),
-    );
-
-    expect(result).toEqual({
-      ok: true,
-      plan: {
-        kind: "RemoteEvent",
-        resourceName: "RoundStarted",
-        targetPath: path.join(root, "RoundStarted"),
-        entryType: "directory",
-        additionalFiles: [
-          {
-            targetPath: path.join(root, "RoundStarted", "init.meta.json"),
-            content: "{\n  \"className\": \"RemoteEvent\"\n}\n",
-          },
-        ],
-      },
-    });
-  });
-
-  it("creates RemoteFunctions as directories with init.meta.json className", async () => {
-    const result = await planResourceCreation(
-      {
-        parentDirectoryPath: root,
-        resourceName: "GetRoundState",
-        kind: "RemoteFunction",
-      },
-      fsWithExistingDirectories([root]),
-    );
-
-    expect(result).toEqual({
-      ok: true,
-      plan: {
-        kind: "RemoteFunction",
-        resourceName: "GetRoundState",
-        targetPath: path.join(root, "GetRoundState"),
-        entryType: "directory",
-        additionalFiles: [
-          {
-            targetPath: path.join(root, "GetRoundState", "init.meta.json"),
-            content: "{\n  \"className\": \"RemoteFunction\"\n}\n",
-          },
-        ],
-      },
-    });
-  });
-
-  it("creates BindableEvents as directories with init.meta.json className", async () => {
-    const result = await planResourceCreation(
-      {
-        parentDirectoryPath: root,
-        resourceName: "RoundChanged",
-        kind: "BindableEvent",
-      },
-      fsWithExistingDirectories([root]),
-    );
-
-    expect(result).toEqual({
-      ok: true,
-      plan: {
-        kind: "BindableEvent",
-        resourceName: "RoundChanged",
-        targetPath: path.join(root, "RoundChanged"),
-        entryType: "directory",
-        additionalFiles: [
-          {
-            targetPath: path.join(root, "RoundChanged", "init.meta.json"),
-            content: "{\n  \"className\": \"BindableEvent\"\n}\n",
-          },
-        ],
-      },
-    });
-  });
-
-  it("creates BindableFunctions as directories with init.meta.json className", async () => {
-    const result = await planResourceCreation(
-      {
-        parentDirectoryPath: root,
-        resourceName: "GetLocalRoundState",
-        kind: "BindableFunction",
-      },
-      fsWithExistingDirectories([root]),
-    );
-
-    expect(result).toEqual({
-      ok: true,
-      plan: {
-        kind: "BindableFunction",
-        resourceName: "GetLocalRoundState",
-        targetPath: path.join(root, "GetLocalRoundState"),
-        entryType: "directory",
-        additionalFiles: [
-          {
-            targetPath: path.join(root, "GetLocalRoundState", "init.meta.json"),
-            content: "{\n  \"className\": \"BindableFunction\"\n}\n",
-          },
-        ],
-      },
-    });
+      expect(result).toEqual({
+        ok: true,
+        plan: {
+          kind,
+          resourceName,
+          targetPath: path.join(root, resourceName),
+          entryType: "directory",
+          additionalFiles: [
+            {
+              targetPath: path.join(root, resourceName, "init.meta.json"),
+              content: `{\n  "className": "${className}"\n}\n`,
+            },
+          ],
+        },
+      });
+    }
   });
 
   it("creates StringValues as text files", async () => {
