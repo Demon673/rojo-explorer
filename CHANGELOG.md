@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.28.0 - Unreleased
+
+- Add `New ObjectValue`, `New Vector3Value`, and `New CFrameValue` commands.
+- Create these value objects as Rojo directories with `init.meta.json` className metadata.
+
 ## 0.27.0 - Unreleased
 
 - Add `New BoolValue`, `New IntValue`, and `New NumberValue` commands.

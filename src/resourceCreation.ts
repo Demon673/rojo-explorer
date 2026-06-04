@@ -19,7 +19,10 @@ export type MetaBackedDirectoryResourceKind =
   | "BindableFunction"
   | "BoolValue"
   | "IntValue"
-  | "NumberValue";
+  | "NumberValue"
+  | "ObjectValue"
+  | "Vector3Value"
+  | "CFrameValue";
 
 export type FileBackedResourceKind = "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule";
 
@@ -52,6 +55,9 @@ const metaBackedDirectoryResourceClassNames = {
   BoolValue: "BoolValue",
   IntValue: "IntValue",
   NumberValue: "NumberValue",
+  ObjectValue: "ObjectValue",
+  Vector3Value: "Vector3Value",
+  CFrameValue: "CFrameValue",
 } satisfies Record<MetaBackedDirectoryResourceKind, string>;
 
 const fileBackedResourceDefinitions = {

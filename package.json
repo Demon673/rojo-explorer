@@ -55,6 +55,9 @@
     "onCommand:rojoExplorer.createBoolValue",
     "onCommand:rojoExplorer.createIntValue",
     "onCommand:rojoExplorer.createNumberValue",
+    "onCommand:rojoExplorer.createObjectValue",
+    "onCommand:rojoExplorer.createVector3Value",
+    "onCommand:rojoExplorer.createCFrameValue",
     "onCommand:rojoExplorer.createLocalizationTable",
     "onCommand:rojoExplorer.createJsonModule",
     "onCommand:rojoExplorer.createTomlModule",
@@ -193,6 +196,21 @@
         "command": "rojoExplorer.createNumberValue",
         "title": "%rojoExplorer.commands.createNumberValue.title%",
         "icon": "$(symbol-number)"
+      },
+      {
+        "command": "rojoExplorer.createObjectValue",
+        "title": "%rojoExplorer.commands.createObjectValue.title%",
+        "icon": "$(symbol-reference)"
+      },
+      {
+        "command": "rojoExplorer.createVector3Value",
+        "title": "%rojoExplorer.commands.createVector3Value.title%",
+        "icon": "$(symbol-operator)"
+      },
+      {
+        "command": "rojoExplorer.createCFrameValue",
+        "title": "%rojoExplorer.commands.createCFrameValue.title%",
+        "icon": "$(symbol-operator)"
       },
       {
         "command": "rojoExplorer.createLocalizationTable",
@@ -405,19 +423,34 @@
           "group": "resource-create@15"
         },
         {
-          "command": "rojoExplorer.createLocalizationTable",
+          "command": "rojoExplorer.createObjectValue",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@16"
         },
         {
-          "command": "rojoExplorer.createJsonModule",
+          "command": "rojoExplorer.createVector3Value",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@17"
         },
         {
-          "command": "rojoExplorer.createTomlModule",
+          "command": "rojoExplorer.createCFrameValue",
           "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
           "group": "resource-create@18"
+        },
+        {
+          "command": "rojoExplorer.createLocalizationTable",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@19"
+        },
+        {
+          "command": "rojoExplorer.createJsonModule",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@20"
+        },
+        {
+          "command": "rojoExplorer.createTomlModule",
+          "when": "view == rojoExplorer.views.explorer && viewItem =~ /createChildren/",
+          "group": "resource-create@21"
         }
       ]
     },

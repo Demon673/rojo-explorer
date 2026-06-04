@@ -155,6 +155,15 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand("rojoExplorer.createNumberValue", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "NumberValue"),
     ),
+    vscode.commands.registerCommand("rojoExplorer.createObjectValue", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "ObjectValue"),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.createVector3Value", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "Vector3Value"),
+    ),
+    vscode.commands.registerCommand("rojoExplorer.createCFrameValue", (node?: ExplorerNode) =>
+      createResource(provider, fileSystem, node, "CFrameValue"),
+    ),
     vscode.commands.registerCommand("rojoExplorer.createLocalizationTable", (node?: ExplorerNode) =>
       createResource(provider, fileSystem, node, "LocalizationTable"),
     ),
@@ -988,6 +997,12 @@ function localizeResourceKind(kind: CreatableResourceKind): string {
       return vscode.l10n.t("IntValue");
     case "NumberValue":
       return vscode.l10n.t("NumberValue");
+    case "ObjectValue":
+      return vscode.l10n.t("ObjectValue");
+    case "Vector3Value":
+      return vscode.l10n.t("Vector3Value");
+    case "CFrameValue":
+      return vscode.l10n.t("CFrameValue");
     case "LocalizationTable":
       return vscode.l10n.t("LocalizationTable");
     case "JSONModule":

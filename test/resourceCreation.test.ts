@@ -49,6 +49,9 @@ describe("resource creation planning", () => {
       { kind: "BoolValue", resourceName: "IsRoundActive", className: "BoolValue" },
       { kind: "IntValue", resourceName: "RoundCount", className: "IntValue" },
       { kind: "NumberValue", resourceName: "RoundTime", className: "NumberValue" },
+      { kind: "ObjectValue", resourceName: "RoundOwner", className: "ObjectValue" },
+      { kind: "Vector3Value", resourceName: "SpawnPosition", className: "Vector3Value" },
+      { kind: "CFrameValue", resourceName: "SpawnPivot", className: "CFrameValue" },
     ];
 
     for (const { kind, resourceName, className } of cases) {
@@ -89,6 +92,9 @@ describe("resource creation planning", () => {
       "BoolValue",
       "IntValue",
       "NumberValue",
+      "ObjectValue",
+      "Vector3Value",
+      "CFrameValue",
     ]);
   });
 

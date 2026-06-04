@@ -631,6 +631,11 @@ function iconForClassName(className: string): vscode.ThemeIcon {
     case "IntValue":
     case "NumberValue":
       return new vscode.ThemeIcon("symbol-number");
+    case "ObjectValue":
+      return new vscode.ThemeIcon("symbol-reference");
+    case "Vector3Value":
+    case "CFrameValue":
+      return new vscode.ThemeIcon("symbol-operator");
     case "LocalizationTable":
       return new vscode.ThemeIcon("table");
     default:

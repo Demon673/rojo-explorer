@@ -21,7 +21,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Copies Studio paths like `game.ReplicatedStorage.Shared.Foo`.
 - Copies absolute and workspace-relative source filesystem paths from mapped resources and diagnostics.
 - Provides Simplified Chinese localization for VS Code users running the `zh-cn` display language.
-- Creates new Rojo-backed folders, scripts, local scripts, module scripts, JSON/TOML modules, models, remote events/functions, bindable events/functions, bool/int/number/string values, and localization tables under filesystem-backed folder resources.
+- Creates new Rojo-backed folders, scripts, local scripts, module scripts, JSON/TOML modules, models, remote events/functions, bindable events/functions, bool/int/number/object/vector/cframe/string values, and localization tables under filesystem-backed folder resources.
 - Creates init scripts for filesystem-discovered Folder resources, allowing a Rojo directory to become a Script, LocalScript, or ModuleScript while keeping children.
 - Removes init scripts from init-backed filesystem resources without deleting the containing directory or child resources.
 - Creates and moves child resources under init-backed Script, LocalScript, and ModuleScript resources by targeting the containing Rojo directory.
