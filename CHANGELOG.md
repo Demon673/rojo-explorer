@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.13.0 - Unreleased
+
+- Add a `New LocalizationTable` command that creates Rojo `.csv` resources under filesystem-backed folders.
+- Seed new localization tables with the standard CSV header columns used by Rojo's documented example.
+
 ## 0.12.0 - Unreleased
 
 - Add a `New StringValue` command that creates Rojo `.txt` resources under filesystem-backed folders.

@@ -80,6 +80,28 @@ describe("resource creation planning", () => {
     });
   });
 
+  it("creates LocalizationTables as CSV files", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "GameText",
+        kind: "LocalizationTable",
+      },
+      fsWithExistingDirectories([root]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        kind: "LocalizationTable",
+        resourceName: "GameText",
+        targetPath: path.join(root, "GameText.csv"),
+        entryType: "file",
+        content: "Key,Source,Context,Example\n",
+      },
+    });
+  });
+
   it("rejects empty names and names with path separators", async () => {
     for (const resourceName of ["", "  ", "Bad/Name", "Bad\\Name"]) {
       const result = await planResourceCreation(
@@ -161,6 +183,23 @@ describe("resource creation planning", () => {
     if (!result.ok) {
       expect(result.reason).toBe("targetExists");
       expect(result.targetPath).toBe(path.join(root, "DisplayName.lua"));
+    }
+  });
+
+  it("rejects LocalizationTable name conflicts across different filesystem forms", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "GameText",
+        kind: "LocalizationTable",
+      },
+      fsWithEntries([{ name: "GameText.txt", type: "file" }], [root]),
+    );
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toBe("targetExists");
+      expect(result.targetPath).toBe(path.join(root, "GameText.txt"));
     }
   });
 

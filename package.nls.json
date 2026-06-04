@@ -15,6 +15,7 @@
   "rojoExplorer.commands.createModuleScript.title": "New ModuleScript",
   "rojoExplorer.commands.createModel.title": "New Model",
   "rojoExplorer.commands.createStringValue.title": "New StringValue",
+  "rojoExplorer.commands.createLocalizationTable.title": "New LocalizationTable",
   "rojoExplorer.commands.renameResource.title": "Rename Resource",
   "rojoExplorer.commands.duplicateResource.title": "Duplicate Resource",
   "rojoExplorer.commands.openResourceMeta.title": "Open/Create Meta File",
