@@ -45,6 +45,7 @@ Rojo Explorer builds a Studio-style resource tree from `*.project.json` files an
 
 - Filesystem-backed create, rename, duplicate, move, and delete commands operate only on resources discovered from mapped source folders.
 - Filesystem-backed Model creation creates a directory plus `init.meta.json` with `className` set to `Model`; it does not generate `.rbxm` or `.rbxmx` assets.
+- Filesystem-backed JSON Module creation creates a plain `.json` file with `{}` content; it does not create `.model.json` or `.project.json` files.
 - Filesystem-backed StringValue creation creates a `.txt` file, matching Rojo's plain text sync rule.
 - Filesystem-backed LocalizationTable creation creates a `.csv` file with `Key,Source,Context,Example` headers, matching Rojo's localization table sync rule.
 - Filesystem-backed meta editing opens or creates sidecar `.meta.json` files for resources discovered from mapped source folders.

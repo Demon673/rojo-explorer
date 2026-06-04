@@ -40,6 +40,7 @@
   "Model": "Model",
   "StringValue": "StringValue",
   "LocalizationTable": "LocalizationTable",
+  "JSON Module": "JSON Module",
   "Created {0}: {1}": "Created {0}: {1}",
   "Resource names cannot be empty or contain path separators.": "Resource names cannot be empty or contain path separators.",
   "Resources can only be created under filesystem-backed directories.": "Resources can only be created under filesystem-backed directories.",

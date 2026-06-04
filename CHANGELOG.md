@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.14.0 - Unreleased
+
+- Add a `New JSON Module` command that creates Rojo `.json` ModuleScript resources under filesystem-backed folders.
+- Seed new JSON modules with an empty object so the created resource is valid JSON immediately.
+
 ## 0.13.0 - Unreleased
 
 - Add a `New LocalizationTable` command that creates Rojo `.csv` resources under filesystem-backed folders.

@@ -10,7 +10,8 @@ export type CreatableResourceKind =
   | "ModuleScript"
   | "Model"
   | "StringValue"
-  | "LocalizationTable";
+  | "LocalizationTable"
+  | "JSONModule";
 
 export interface ResourceCreationRequest {
   parentDirectoryPath: string;
@@ -145,6 +146,14 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
         entryType: "file",
         content: "Key,Source,Context,Example\n",
       };
+    case "JSONModule":
+      return {
+        kind,
+        resourceName,
+        targetPath: path.join(parentDirectoryPath, `${resourceName}.json`),
+        entryType: "file",
+        content: "{}\n",
+      };
     case "Script":
       return scriptPlan(parentDirectoryPath, resourceName, kind, ".server.lua");
     case "LocalScript":
@@ -157,7 +166,7 @@ export function createPlan(parentDirectoryPath: string, resourceName: string, ki
 function scriptPlan(
   parentDirectoryPath: string,
   resourceName: string,
-  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "StringValue" | "LocalizationTable">,
+  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "StringValue" | "LocalizationTable" | "JSONModule">,
   suffix: string,
 ): ResourceCreationPlan {
   return {
@@ -169,7 +178,9 @@ function scriptPlan(
   };
 }
 
-function defaultScriptContent(kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "StringValue" | "LocalizationTable">): string {
+function defaultScriptContent(
+  kind: Exclude<CreatableResourceKind, "Folder" | "Model" | "StringValue" | "LocalizationTable" | "JSONModule">,
+): string {
   if (kind === "ModuleScript") {
     return "return {}\n";
   }

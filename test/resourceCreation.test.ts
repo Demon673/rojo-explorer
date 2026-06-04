@@ -102,6 +102,28 @@ describe("resource creation planning", () => {
     });
   });
 
+  it("creates JSON Modules as JSON files", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "Config",
+        kind: "JSONModule",
+      },
+      fsWithExistingDirectories([root]),
+    );
+
+    expect(result).toEqual({
+      ok: true,
+      plan: {
+        kind: "JSONModule",
+        resourceName: "Config",
+        targetPath: path.join(root, "Config.json"),
+        entryType: "file",
+        content: "{}\n",
+      },
+    });
+  });
+
   it("rejects empty names and names with path separators", async () => {
     for (const resourceName of ["", "  ", "Bad/Name", "Bad\\Name"]) {
       const result = await planResourceCreation(
@@ -200,6 +222,23 @@ describe("resource creation planning", () => {
     if (!result.ok) {
       expect(result.reason).toBe("targetExists");
       expect(result.targetPath).toBe(path.join(root, "GameText.txt"));
+    }
+  });
+
+  it("rejects JSON Module name conflicts across different filesystem forms", async () => {
+    const result = await planResourceCreation(
+      {
+        parentDirectoryPath: root,
+        resourceName: "Config",
+        kind: "JSONModule",
+      },
+      fsWithEntries([{ name: "Config.lua", type: "file" }], [root]),
+    );
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toBe("targetExists");
+      expect(result.targetPath).toBe(path.join(root, "Config.lua"));
     }
   });
 
