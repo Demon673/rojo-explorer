@@ -24,7 +24,9 @@ export type MetaBackedDirectoryResourceKind =
   | "Vector3Value"
   | "CFrameValue"
   | "Color3Value"
-  | "BrickColorValue";
+  | "BrickColorValue"
+  | "Configuration"
+  | "Attachment";
 
 export type FileBackedResourceKind = "StringValue" | "LocalizationTable" | "JSONModule" | "TOMLModule";
 
@@ -62,6 +64,8 @@ const metaBackedDirectoryResourceClassNames = {
   CFrameValue: "CFrameValue",
   Color3Value: "Color3Value",
   BrickColorValue: "BrickColorValue",
+  Configuration: "Configuration",
+  Attachment: "Attachment",
 } satisfies Record<MetaBackedDirectoryResourceKind, string>;
 
 const fileBackedResourceDefinitions = {

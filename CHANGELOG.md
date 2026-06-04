@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.30.0 - Unreleased
+
+- Add `New Configuration` and `New Attachment` commands.
+- Create these objects as Rojo directories with `init.meta.json` className metadata.
+
 ## 0.29.0 - Unreleased
 
 - Add `New Color3Value` and `New BrickColorValue` commands.

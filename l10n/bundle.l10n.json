@@ -56,6 +56,8 @@
   "CFrameValue": "CFrameValue",
   "Color3Value": "Color3Value",
   "BrickColorValue": "BrickColorValue",
+  "Configuration": "Configuration",
+  "Attachment": "Attachment",
   "LocalizationTable": "LocalizationTable",
   "JSON Module": "JSON Module",
   "TOML Module": "TOML Module",

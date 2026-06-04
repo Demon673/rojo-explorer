@@ -54,6 +54,8 @@ describe("resource creation planning", () => {
       { kind: "CFrameValue", resourceName: "SpawnPivot", className: "CFrameValue" },
       { kind: "Color3Value", resourceName: "TeamColor", className: "Color3Value" },
       { kind: "BrickColorValue", resourceName: "SpawnBrickColor", className: "BrickColorValue" },
+      { kind: "Configuration", resourceName: "WeaponConfig", className: "Configuration" },
+      { kind: "Attachment", resourceName: "GripAttachment", className: "Attachment" },
     ];
 
     for (const { kind, resourceName, className } of cases) {
@@ -99,6 +101,8 @@ describe("resource creation planning", () => {
       "CFrameValue",
       "Color3Value",
       "BrickColorValue",
+      "Configuration",
+      "Attachment",
     ]);
   });
 

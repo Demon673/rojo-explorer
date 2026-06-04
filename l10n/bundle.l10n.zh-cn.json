@@ -56,6 +56,8 @@
   "CFrameValue": "坐标帧值",
   "Color3Value": "颜色值",
   "BrickColorValue": "砖块颜色值",
+  "Configuration": "配置容器",
+  "Attachment": "附件点",
   "LocalizationTable": "本地化表",
   "JSON Module": "JSON 模块",
   "TOML Module": "TOML 模块",

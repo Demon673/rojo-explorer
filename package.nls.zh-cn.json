@@ -31,6 +31,8 @@
   "rojoExplorer.commands.createCFrameValue.title": "新建 CFrameValue",
   "rojoExplorer.commands.createColor3Value.title": "新建 Color3Value",
   "rojoExplorer.commands.createBrickColorValue.title": "新建 BrickColorValue",
+  "rojoExplorer.commands.createConfiguration.title": "新建 Configuration",
+  "rojoExplorer.commands.createAttachment.title": "新建 Attachment",
   "rojoExplorer.commands.createLocalizationTable.title": "新建 LocalizationTable",
   "rojoExplorer.commands.createJsonModule.title": "新建 JSON Module",
   "rojoExplorer.commands.createTomlModule.title": "新建 TOML Module",

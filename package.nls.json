@@ -31,6 +31,8 @@
   "rojoExplorer.commands.createCFrameValue.title": "New CFrameValue",
   "rojoExplorer.commands.createColor3Value.title": "New Color3Value",
   "rojoExplorer.commands.createBrickColorValue.title": "New BrickColorValue",
+  "rojoExplorer.commands.createConfiguration.title": "New Configuration",
+  "rojoExplorer.commands.createAttachment.title": "New Attachment",
   "rojoExplorer.commands.createLocalizationTable.title": "New LocalizationTable",
   "rojoExplorer.commands.createJsonModule.title": "New JSON Module",
   "rojoExplorer.commands.createTomlModule.title": "New TOML Module",

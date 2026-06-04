@@ -639,6 +639,10 @@ function iconForClassName(className: string): vscode.ThemeIcon {
     case "Color3Value":
     case "BrickColorValue":
       return new vscode.ThemeIcon("symbol-color");
+    case "Configuration":
+      return new vscode.ThemeIcon("settings-gear");
+    case "Attachment":
+      return new vscode.ThemeIcon("location");
     case "LocalizationTable":
       return new vscode.ThemeIcon("table");
     default:
