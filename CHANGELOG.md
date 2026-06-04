@@ -2,6 +2,11 @@
 
 All notable changes to Rojo Explorer will be documented in this file.
 
+## 0.17.0 - Unreleased
+
+- Refresh the tree when external filesystem changes create, change, or delete Rojo-relevant source files and directory resources.
+- Filter broad filesystem watcher events so unrelated files and common infrastructure folders do not rebuild the tree.
+
 ## 0.16.0 - Unreleased
 
 - Add a command to copy workspace-relative source paths from Rojo Explorer nodes.

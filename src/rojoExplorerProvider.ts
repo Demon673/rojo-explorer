@@ -21,6 +21,7 @@ import { canEditInitMetaSourceKind } from "./resourceInitMeta";
 import { canEditMetaSourceKind } from "./resourceMeta";
 import { canMoveSourceKind } from "./resourceMove";
 import { canRenameSourceKind } from "./resourceRename";
+import { RojoFileSystemChangeKind, shouldRefreshForRojoFileSystemChange } from "./rojoFileSystemWatch";
 import { VscodeRojoFileSystem } from "./vscodeFileSystem";
 import { findRojoProjectFiles } from "./vscodeRojoProjects";
 
@@ -56,19 +57,12 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     projectWatcher.onDidChange(() => this.scheduleRefresh());
     projectWatcher.onDidDelete(() => this.scheduleRefresh());
 
-    const sourceWatchers = [
-      "**/*.{lua,luau,json,toml,txt,csv,rbxm,rbxmx}",
-      "**/*.meta.json",
-      "**/default.project.json",
-    ].map((pattern) => vscode.workspace.createFileSystemWatcher(pattern));
+    const sourceWatcher = vscode.workspace.createFileSystemWatcher("**");
+    sourceWatcher.onDidCreate((uri) => void this.scheduleRefreshForFileSystemChange(uri));
+    sourceWatcher.onDidChange((uri) => void this.scheduleRefreshForFileSystemChange(uri));
+    sourceWatcher.onDidDelete((uri) => this.scheduleRefreshForDeletedPath(uri));
 
-    for (const watcher of sourceWatchers) {
-      watcher.onDidCreate(() => this.scheduleRefresh());
-      watcher.onDidChange(() => this.scheduleRefresh());
-      watcher.onDidDelete(() => this.scheduleRefresh());
-    }
-
-    context.subscriptions.push(projectWatcher, ...sourceWatchers);
+    context.subscriptions.push(projectWatcher, sourceWatcher);
   }
 
   refresh(): void {
@@ -186,6 +180,27 @@ export class RojoExplorerProvider implements vscode.TreeDataProvider<ExplorerNod
     }
 
     this.refreshTimer = setTimeout(() => this.refresh(), 150);
+  }
+
+  private async scheduleRefreshForFileSystemChange(uri: vscode.Uri): Promise<void> {
+    if (shouldRefreshForRojoFileSystemChange(uri.fsPath, await this.getFileSystemChangeKind(uri))) {
+      this.scheduleRefresh();
+    }
+  }
+
+  private scheduleRefreshForDeletedPath(uri: vscode.Uri): void {
+    if (shouldRefreshForRojoFileSystemChange(uri.fsPath, "deleted")) {
+      this.scheduleRefresh();
+    }
+  }
+
+  private async getFileSystemChangeKind(uri: vscode.Uri): Promise<RojoFileSystemChangeKind> {
+    try {
+      const stat = await vscode.workspace.fs.stat(uri);
+      return (stat.type & vscode.FileType.Directory) !== 0 ? "directory" : "file";
+    } catch {
+      return "deleted";
+    }
   }
 
   getTreeItem(node: ExplorerNode): vscode.TreeItem {

@@ -13,6 +13,7 @@ This repository uses Git as the rollback boundary for project work. Changes shou
 - Builds a read-only Studio-style resource tree from the Rojo `tree` object and mapped filesystem contents.
 - Resolves `$path` entries relative to the project file.
 - Applies Rojo v7 sync rules for scripts, init scripts, models, JSON/TOML modules, plain text, localization tables, included `default.project.json` files, and `.meta.json` files.
+- Auto-refreshes when Rojo-relevant source files or directory resources change on disk.
 - Shows diagnostics for invalid JSON, missing mapped paths, duplicate init scripts, orphan meta files, and unsupported meta usage.
 - Shows diagnostics as expandable tree nodes, not only tooltip text.
 - Opens or reveals mapped source files and folders from the tree context menu.
